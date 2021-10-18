@@ -31,6 +31,10 @@ namespace API
             //Connection string from appsettings.json
             services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataContext")));
 
+            //CORS (Cross Origin Resource Sharing)
+            //=====================================
+            services.AddCors();
+
             services.AddControllers();
         }
 
@@ -43,6 +47,11 @@ namespace API
             }
 
             app.UseRouting();
+
+
+            //CORS (Cross Origin Resource Sharing)
+            //=====================================
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
 
             app.UseAuthorization();
 

@@ -15,6 +15,8 @@ import { NavComponent } from './Shared/nav/nav.component';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
+    FormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
   ],
