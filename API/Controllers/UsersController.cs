@@ -12,14 +12,14 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Users : ControllerBase
+    public class UsersController : ControllerBase
     {
 
         //--------------------------------------
         //DataContext object -> To Query Database
         //--------------------------------------
         private readonly DataContext _context;
-        public Users(DataContext context)
+        public UsersController(DataContext context)
         {
             _context = context;
         }
