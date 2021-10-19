@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace API.Data
 {
+    //Nuget Packages:
+    /* EF Core Tools 3.1.13
+       EF Core Sql 3.1.13
+       WebCodeGenerator 3.1.5
+    */
 
     //DbContext: for querying Database
     //pass DbContext options -> DbContext

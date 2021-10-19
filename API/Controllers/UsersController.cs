@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ namespace API.Controllers
         // GET All Users
         //_______________
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             var users = await _context.Users.ToListAsync();
@@ -38,7 +40,9 @@ namespace API.Controllers
         //________________
         // GET User by Id
         //________________
+        //Need to Pass JWT in header as Authorization:Bearer Token
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> GetUser(int Id)
         {
             return await _context.Users.FindAsync(Id);

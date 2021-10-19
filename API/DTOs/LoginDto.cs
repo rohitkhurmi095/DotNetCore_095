@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace API.DTOs
 {
+    //Input for Login
     public class LoginDto
     {
         //UserName

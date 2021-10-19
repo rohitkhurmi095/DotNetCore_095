@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using API.Interfaces;
 
 namespace API.Controllers
 {
@@ -19,12 +20,14 @@ namespace API.Controllers
     public class AccountController : ControllerBase
     {
         //--------------------------------------
-        //DataContext object -> To Query Database
+        //Dependency Injection -> Constructor
         //--------------------------------------
-        private readonly DataContext _context;
-        public AccountController(DataContext context)
+        private readonly DataContext _context;  //DbContext
+        private readonly ITokenService _tokenService;  //TokenService
+        public AccountController(DataContext context,ITokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
         //---------------
@@ -42,7 +45,7 @@ namespace API.Controllers
         // REGISTER
         //===========
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             //CHECK if UserName already exists in Db
             //--------------------------------
@@ -72,8 +75,12 @@ namespace API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            //Return User
-            return user;
+            //Return UserDto(UserName+Token)
+            return new UserDto
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
 
 
@@ -84,7 +91,7 @@ namespace API.Controllers
         // LOGIN
         //=========
         [HttpPost("login")]
-        public async Task<ActionResult<User>> Login(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             //FIND User in Database 
             //----------------------
@@ -122,8 +129,12 @@ namespace API.Controllers
             }
 
 
-            //IfValidPassword => return User
-            return user;
+            //IfValidPassword => return UserDto(UserName+Token)
+            return new UserDto
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
     }
 }
