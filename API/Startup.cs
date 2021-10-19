@@ -1,4 +1,5 @@
 using API.Data;
+using API.Extensions;
 using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,9 +22,6 @@ namespace API
 {
     public class Startup
     {
-        //__________
-        //SERVICES
-        //__________
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,26 +30,17 @@ namespace API
         public IConfiguration Configuration { get; }
 
 
-        //____________
-        //MIDDLEWARES
-        //____________
+        //__________
+        //SERVICES
+        //__________
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //================================
-            //DEPENDENCY INJECTION (Services)
-            //================================
-            //AddSingleton - doesnt stop until application stop
-            //AddScoped - till lifetime of Http Request
-            //AddTransient - service created + destroyed as soon as method is finished
-            //-------------------------------
-            //TokenService
-            services.AddScoped<ITokenService, TokenService>();
-
-            //Connection String
-            //==================
-            //Connection string from appsettings.json
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataContext")));
+            //*******************
+            //ApplicationServices
+            //********************
+            //TokenService + ConnectionString
+            services.AddApplicationServices(Configuration);
 
             services.AddControllers();
 
@@ -59,27 +48,18 @@ namespace API
             //=====================================
             services.AddCors();
 
-            //====================
+            //******************
+            //Identity Services
+            //******************
             //JWT Authentication
-            //====================
-            //NugetPackage:[Microsoft.ASPNetCore.Authentication.JwtBearer 3.1.2]
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    //ValidIssuer = "API localhost",
-                    //ValidAudience = "Angular localhost"
-                };
-            });
-
+            services.AddIdentityServices(Configuration);
 
         }
 
+
+        //____________
+        //MIDDLEWARES
+        //____________
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
