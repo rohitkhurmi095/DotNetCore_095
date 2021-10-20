@@ -1,0 +1,34 @@
+<!--===============-->
+<!-- REGISTER FORM -->
+<!--===============-->
+<form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off">
+    <h2 class="text-center text-primary">Sign up</h2>
+    <hr>
+
+    <!-- Username -->
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Username" name="username" [(ngModel)]="model.username">
+    </div>
+
+      <!-- Select Fav User -->
+      <div class="form-group">
+        <label> Who is your favourite user?</label>
+        <select class="form-control" [(ngModel)]="model.favUser" name="favUser">
+            <option selected disabled>Select favourite User</option>
+            <option *ngFor="let user of UsersList" [value]="user.userName">{{user.userName}}</option>
+        </select>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+        <input type="password" class="form-control" placeholder="Password" name="password" [(ngModel)]="model.password">
+    </div>
+
+    <!-- Buttons -->
+    <div>
+        <!-- Submit -->
+        <button class="btn btn-success mr-2" type="submit">Register</button>
+        <!-- Cancel -->
+        <button class="btn btn-danger mr-2" type="button" (click)="cancel()">Cancel</button>
+    </div>
+</form>

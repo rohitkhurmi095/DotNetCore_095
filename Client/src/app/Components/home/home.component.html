@@ -1,0 +1,29 @@
+<div class="container mt-5">
+
+    <!-- Hide when Register button is clicked-->
+    <div style="text-align: center;" *ngIf="!registerMode">
+        <h1>Find yout match</h1>
+        <p class="lead">Come on in to view your matches... all you need to do is signup!</p>
+        <div class="text-center">
+            <button class="btn btn-primary btn-lg mr-2" (click)="registerToggler()">Register</button>
+            <button class="btn btn-info btn-lg">Learn more</button>
+        </div>
+    </div>
+    
+    <!-- Hidden by default -->
+    <!-- Show when Register button is clicked-->
+    <div class="container" *ngIf="registerMode">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <!--===============-->
+                <!-- Register Form -->
+                <!--===============-->
+                <!-- Pass Data from PARENT TO CHILD(@INPUT DECORATOR IN CHILD)-->
+                <!-- Passing AllUsers to RegisterComponent(Dropdown)-->
+                <!-- Receive value from RegisterComponent(to set registerMode based on cancel button clicked in RegisterForm)-->
+                <app-resister [AllUsers]="users" (CancelRegister)="CancelRegisterMode($event)"></app-resister>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -68,9 +68,37 @@ export class AccountService {
           localStorage.setItem('user',JSON.stringify(user));
         }
       })
-    )
+    );
   }
  
+
+  
+  //=========
+  //Register
+  //=========
+  register(model:any){
+    //Call Register API
+    return this.http.post(Global.BASE_API_PATH + "account/register",model).pipe(
+      map((res:any)=>{
+        //Get User from API
+        const user:User = res;
+
+        //If **Success**
+        if(user){
+          //SetCurrent user detais = user in BehaviourSubject
+          this.currentUser.next(user)
+          
+          //Set loggedIn Status = true
+          this.loggedIn.next(true);
+
+          //Add User to LocalStorage
+          localStorage.setItem('user',JSON.stringify(res));
+        }
+        //optional to show 'res' from API directly without JSON.Stringify(res)
+        return user;
+      })
+    );
+  }
 
 
   //========

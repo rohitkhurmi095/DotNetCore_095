@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { User } from './Shared/_models/user';
 import { AccountService } from './Shared/_services/account.service';
@@ -11,29 +10,18 @@ import { AccountService } from './Shared/_services/account.service';
 export class AppComponent implements OnInit {
   title = 'Client';
 
-  //Users
-  Users:any;
 
   //Dependency Injection -> HttpClient
-  constructor(private  http:HttpClient,private accountService:AccountService){}
+  constructor(private accountService:AccountService){}
 
   //Loads -> when view is fully initialized
   ngOnInit(){
-    //AllUsers
-    this.getUsers();
 
     //CurrentUser
     this.setCurrentUser();
   }
 
-  //AllUsers
-  //=========
-  getUsers(){
-    this.http.get("http://localhost:1472/api/users/").subscribe(res=>{
-      this.Users = res;
-    });
-  }
-
+ 
 
   //CurrentUser
   //============
