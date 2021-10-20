@@ -10,15 +10,6 @@
         <input type="text" class="form-control" placeholder="Username" name="username" [(ngModel)]="model.username">
     </div>
 
-      <!-- Select Fav User -->
-      <div class="form-group">
-        <label> Who is your favourite user?</label>
-        <select class="form-control" [(ngModel)]="model.favUser" name="favUser">
-            <option selected disabled>Select favourite User</option>
-            <option *ngFor="let user of UsersList" [value]="user.userName">{{user.userName}}</option>
-        </select>
-    </div>
-
     <!-- Password -->
     <div class="form-group">
         <input type="password" class="form-control" placeholder="Password" name="password" [(ngModel)]="model.password">

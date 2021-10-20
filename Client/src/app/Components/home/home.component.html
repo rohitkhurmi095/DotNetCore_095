@@ -21,7 +21,7 @@
                 <!-- Pass Data from PARENT TO CHILD(@INPUT DECORATOR IN CHILD)-->
                 <!-- Passing AllUsers to RegisterComponent(Dropdown)-->
                 <!-- Receive value from RegisterComponent(to set registerMode based on cancel button clicked in RegisterForm)-->
-                <app-resister [AllUsers]="users" (CancelRegister)="CancelRegisterMode($event)"></app-resister>
+                <app-resister (CancelRegister)="CancelRegisterMode($event)"></app-resister>
             </div>
         </div>
     </div>

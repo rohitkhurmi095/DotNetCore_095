@@ -11,33 +11,20 @@ export class HomeComponent implements OnInit {
 
   //RegisterMode
   registerMode:boolean = false;
-  //Users
-  users:any;
+
 
   //HttpClient -> handling requests
   constructor(private http:HttpClient) { }
 
   //Load -> when view is fully initialized
   ngOnInit(): void {
-    this.getUsers();
+
   }
 
   //Register Toggler
   //=================
   registerToggler(){
     this.registerMode = !this.registerMode;
-  }
-
-
-  //==============
-  //GET ALL USERS
-  //==============
-  getUsers(){
-    this.http.get(Global.BASE_API_PATH + "users").subscribe(res=>{
-      this.users = res;
-    },error=>{
-      console.log(error);
-    })
   }
 
 

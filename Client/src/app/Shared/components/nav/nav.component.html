@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
     <div class="container">
       <!-- BrandLogo-->
-      <a class="navbar-brand" href="#">Dating App</a>
+      <a class="navbar-brand" routerLink='/'>Dating App</a>
     
       <!--=================================-->
       <!-- SHOW Only when user is LoggedIn -->
@@ -9,13 +9,13 @@
   
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0" *ngIf="currentUser|async">
           <li class="nav-item">
-            <a class="nav-link" href="#">Matches</a>
+            <a class="nav-link" href='/members'>Matches</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">List</a>
+            <a class="nav-link" href='/lists'>List</a>
           </li>
           <li class="nav-item">
-              <a class="nav-link" href="#">Messages</a>
+              <a class="nav-link" routerLink='/messages'>Messages</a>
             </li>
         </ul>
         
