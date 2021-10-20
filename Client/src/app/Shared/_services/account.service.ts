@@ -1,0 +1,93 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, using } from 'rxjs';
+import { Global } from '../global';
+import {map} from 'rxjs/operators';
+import { User } from '../_models/user';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AccountService {
+
+  //HttpClient - for handling requests
+  constructor(private http:HttpClient) { }
+
+
+  //(SubjectBehaviour - Observable)
+  //------------------
+  //CurrentUser Data
+  private currentUser = new BehaviorSubject<any>(null);
+  //User is loggedIn or not
+  private loggedIn = new BehaviorSubject<boolean>(false);
+
+
+  //getter methods - to use outside component
+  //asObservable() -> subject cannot be modified using next()
+  //--------------
+  get CurrentUser(){
+    return this.currentUser.asObservable();
+  }
+  get isLoggedIn(){
+    return this.loggedIn.asObservable();
+  }
+
+
+  //--------------------
+  //**SET CurrentUser**
+  //--------------------
+  //used in appComponent to make user loggedIn until logOut is clicked
+  //get user from localStorage & pass in this method
+  setCurrentUser(user:User){
+    this.currentUser.next(user);
+  }
+
+
+  //=======
+  //Login
+  //=======
+  //model = formData passed into login() method
+  login(model:any){
+    //Call API(accounts/login)
+    return this.http.post(Global.BASE_API_PATH+"account/login",model).pipe(
+      map((res:any)=>{
+        
+        //Get user from API
+        const user:User = res;
+        //console.log("LOGIN API RESPONSE:"+ JSON.stringify(res));
+
+        //If **Success** 
+        if(user){
+          //SetCurrent user detais = user in BehaviourSubject
+          this.currentUser.next(user);
+
+          //Set loggedIn Status = true
+          this.loggedIn.next(true);
+          
+          //add user to LocalStorage
+          localStorage.setItem('user',JSON.stringify(user));
+        }
+      })
+    )
+  }
+ 
+
+
+  //========
+  //Logout
+  //========
+  logout(){
+    //Clear LocalStorage
+    //localStorage.removeItem('user');
+    localStorage.clear(); 
+
+    //SetCurrent user detais = null in BehaviourSubject
+    this.currentUser.next(null);
+
+    //Set loggedIn Status = false
+    this.loggedIn.next(false);
+  }
+  
+}
+
+

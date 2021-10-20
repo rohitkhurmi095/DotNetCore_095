@@ -1,8 +1,8 @@
 <app-nav></app-nav>
 
 <div class="container" style="margin-top:60px;">
-    <ul *ngFor="let user of Users">
-        <li>{{user.userId}} | {{user.userName}}</li>
+    <ul>
+        <li *ngFor="let user of Users">{{user.userId}} | {{user.userName}}</li>
     </ul>
 </div>
 

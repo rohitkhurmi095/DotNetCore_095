@@ -6,7 +6,8 @@ import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NavComponent } from './Shared/nav/nav.component';
+import { NavComponent } from './Shared/components/nav/nav.component';
+
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { NavComponent } from './Shared/nav/nav.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
     AppRoutingModule,
