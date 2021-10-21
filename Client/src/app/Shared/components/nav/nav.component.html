@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar navbar-dark bg-primary">
     <div class="container">
       <!-- BrandLogo-->
       <a class="navbar-brand" routerLink='/'>Dating App</a>
@@ -6,17 +6,18 @@
       <!--=================================-->
       <!-- SHOW Only when user is LoggedIn -->
       <!--=================================-->
-  
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0" *ngIf="currentUser|async">
-          <li class="nav-item">
-            <a class="nav-link" href='/members'>Matches</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href='/lists'>List</a>
-          </li>
-          <li class="nav-item">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <ng-container *ngIf="currentUser|async"> 
+            <li class="nav-item">
+              <a class="nav-link" href='/members'>Matches</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href='/lists'>List</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" routerLink='/messages'>Messages</a>
             </li>
+          </ng-container>
         </ul>
         
         
@@ -25,8 +26,8 @@
         <!-- DROPDOWN   -->
         <!--============-->
         <!-- SHOW only if user is LoggedIn-->
-        <div class="dropdown mr-40" *ngIf="currentUser|async" style="float:right;">
-          <a class="dropdown-toggle text-light" style="text-decoration: none!important;" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Welcome user</a>
+        <div class="dropdown mr-40" *ngIf="(currentUser|async) as user" style="float:right;">
+          <a class="dropdown-toggle text-light" style="text-decoration: none!important;" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Welcome {{user.userName | titlecase}}</a>
 
           <div class="dropdown-menu  mt-3" aria-labelledby="dropdownMenuLink">
              <!-- Profile-->
@@ -50,7 +51,7 @@
           <input class="form-control mr-sm-2" type="password" placeholder="Password" name="password" [(ngModel)]="model.password">
           
           <!-- Login Button-->
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
+          <button class="btn btn-success my-2 my-sm-0" type="submit">Login</button>
         </form> 
       </div> 
 </nav>
