@@ -13,6 +13,9 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
+    //Authorize all methods inside this controller
+    [Authorize]
     public class UsersController : ControllerBase
     {
 
@@ -29,7 +32,6 @@ namespace API.Controllers
         // GET All Users
         //_______________
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             var users = await _context.Users.ToListAsync();
@@ -42,7 +44,6 @@ namespace API.Controllers
         //________________
         //Need to Pass JWT in header as Authorization:Bearer Token
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<User>> GetUser(int Id)
         {
             return await _context.Users.FindAsync(Id);
