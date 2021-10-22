@@ -1,5 +1,7 @@
 ﻿using API.Data;
+using API.Data.Repositories;
 using API.Entities;
+using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,13 +22,14 @@ namespace API.Controllers
     {
 
         //--------------------------------------
-        //DataContext object -> To Query Database
+        //Repository object -> To Query Database
         //--------------------------------------
-        private readonly DataContext _context;
-        public UsersController(DataContext context)
+        private readonly IUserRepository _userRepository;
+        public UsersController(IUserRepository userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
+
 
         //_______________
         // GET All Users
@@ -34,7 +37,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            var users = await _context.Users.ToListAsync();
+            var users = await _userRepository.GetUsersAsync();
             return Ok(users);
         }
 
@@ -43,10 +46,20 @@ namespace API.Controllers
         // GET User by Id
         //________________
         //Need to Pass JWT in header as Authorization:Bearer Token
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public async Task<ActionResult<User>> GetUser(int Id)
         {
-            return await _context.Users.FindAsync(Id);
+            return await _userRepository.GetUserByIdAsync(Id);
         }
+
+
+
+        [HttpGet("name/{username}")]
+        public async Task<ActionResult<User>> GetUser(string username)
+        {
+            return await _userRepository.GetUserByUsernameAsync(username);
+        }
+
+
     }
 }

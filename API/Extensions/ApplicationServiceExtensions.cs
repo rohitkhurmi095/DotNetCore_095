@@ -1,13 +1,10 @@
 ﻿using API.Data;
+using API.Data.Repositories;
 using API.Interfaces;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace API.Extensions
 {
@@ -30,6 +27,10 @@ namespace API.Extensions
             //-------------------------------
             //TokenService
             services.AddScoped<ITokenService, TokenService>();
+
+            //----- REPOSITORY SERVICE -----
+            //UserRepository
+            services.AddScoped<IUserRepository,UserRepository>();
 
 
             //Connection String
