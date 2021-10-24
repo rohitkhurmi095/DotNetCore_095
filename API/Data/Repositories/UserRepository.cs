@@ -36,21 +36,29 @@ namespace API.Data.Repositories
 
         //GET USER BY USERNAME
         //********************
+        //:::::NOTE:::::
         //Include(p=>p.property) = EagerLoading
-        //can result in circular ref exception
+        //**can result in circular ref exception
+        //SOLUTION: Use Automapper + MemberDto/PhotoDto
         public async Task<User> GetUserByUsernameAsync(string username)
         {
-            return await _context.Users.SingleOrDefaultAsync(x => x.UserName == username);
+            return await _context.Users.
+                Include(p=>p.Photos)
+                .SingleOrDefaultAsync(x => x.UserName == username);
         }
 
 
         //GET USERS
         //**********
+        //:::::NOTE:::::
         //Include(p=>p.property) = EagerLoading
-        // can result in circular ref exception
+        //**can result in circular ref exception
+        //SOLUTION: Use Automapper + MemberDto/PhotoDto
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.
+                Include(p=>p.Photos).
+                ToListAsync();
         }
 
 

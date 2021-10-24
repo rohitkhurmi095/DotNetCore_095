@@ -66,6 +66,7 @@ namespace API.Entities
         //-----------------------
         //Calculate age based on DateOfBirth
         //Calculate Age using extension method
+        //Mapped as Age in MemberDto (using AutoMapper)
         public int GetAge()
         {
             return DateOfBirth.calculateAge();

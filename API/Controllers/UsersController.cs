@@ -1,7 +1,9 @@
 ﻿using API.Data;
 using API.Data.Repositories;
+using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +26,19 @@ namespace API.Controllers
         //--------------------------------------
         //Repository object -> To Query Database
         //--------------------------------------
+        //UserRepository
         private readonly IUserRepository _userRepository;
-        public UsersController(IUserRepository userRepository)
+
+        //AutoMapper -> IMapper Interface
+        //_mapper.Map<What to map>(source of mapping);
+        private readonly IMapper _mapper;
+        public UsersController(IUserRepository userRepository, IMapper mapper)
         {
+            //user repository
             _userRepository = userRepository;
+
+            //IMapper interface
+            _mapper = mapper;
         }
 
 
@@ -35,29 +46,33 @@ namespace API.Controllers
         // GET All Users
         //_______________
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
         {
             var users = await _userRepository.GetUsersAsync();
-            return Ok(users);
+
+            //Mapping MapperDto <-> UserEntities using IMapper (via AutoMapper)
+            var usersToReturn = _mapper.Map<IEnumerable<MemberDto>>(users);
+
+            //return users (members Dto)
+            return Ok(usersToReturn);
         }
 
 
-        //________________
-        // GET User by Id
-        //________________
-        //Need to Pass JWT in header as Authorization:Bearer Token
-        [HttpGet("id/{id}")]
-        public async Task<ActionResult<User>> GetUser(int Id)
+        //_________________
+        // GET User by name
+        //_________________
+        [HttpGet("{username}")]
+        public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
-            return await _userRepository.GetUserByIdAsync(Id);
-        }
+            var user = await _userRepository.GetUserByUsernameAsync(username);
 
 
+            //Mapping MapperDto <-> UserEntities using IMapper (via AutoMapper)
+            var userToReturn = _mapper.Map<MemberDto>(user);
 
-        [HttpGet("name/{username}")]
-        public async Task<ActionResult<User>> GetUser(string username)
-        {
-            return await _userRepository.GetUserByUsernameAsync(username);
+            //return User(MemberDto)
+            return userToReturn;
+
         }
 
 

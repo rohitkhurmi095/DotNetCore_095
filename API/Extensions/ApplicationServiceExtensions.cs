@@ -1,7 +1,9 @@
 ﻿using API.Data;
 using API.Data.Repositories;
+using API.Helpers;
 using API.Interfaces;
 using API.Services;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +33,13 @@ namespace API.Extensions
             //----- REPOSITORY SERVICE -----
             //UserRepository
             services.AddScoped<IUserRepository,UserRepository>();
+
+
+            //-----[ AUTOMAPPER SERVICE ]-----
+            //Maps 1 obj to another (Dto <-> Entities)
+            //AutoMapper Profiles
+            //SingleProject = SingleAssembly
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
 
             //Connection String
