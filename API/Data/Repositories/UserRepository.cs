@@ -1,5 +1,8 @@
-﻿using API.Entities;
+﻿using API.DTOs;
+using API.Entities;
 using API.Interfaces;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,9 +20,12 @@ namespace API.Data.Repositories
         //------------
         //DbContext 
         private readonly DataContext _context;
-        public UserRepository(DataContext context)
+        //IMapper
+        private readonly IMapper _mapper;
+        public UserRepository(DataContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -78,6 +84,32 @@ namespace API.Data.Repositories
         {
             //Modify DataContext State for 'user' Entry
             _context.Entry(user).State = EntityState.Modified;
+        }
+
+
+
+
+        //*************************************************
+        //Using AutoMapper Querable extensions - MemberDto
+        //*************************************************
+        //ProjectTo = return the property we want directly from the database
+        //ProjectTo<Dto>(_mapper.ConfigurationProvider)
+        //ConfigurationProvider = AutoMapperProfile configurations (Helpers Folder)
+
+        //GET USERS
+        public async Task<IEnumerable<MemberDto>> GetMembersAsync()
+        {
+            return await _context.Users.
+                        ProjectTo<MemberDto>(_mapper.ConfigurationProvider).
+                        ToListAsync();
+        }
+
+        //GET USER by name
+        public async Task<MemberDto> GetMemberAsync(string username)
+        {
+            return await _context.Users.Where(x=>x.UserName == username)
+                        .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                        .SingleOrDefaultAsync();
         }
     }
 }

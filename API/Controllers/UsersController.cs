@@ -76,5 +76,24 @@ namespace API.Controllers
         }
 
 
+
+
+        //*************************************************
+        //Using AutoMapper Querable extensions - MemberDto
+        //*************************************************
+        //ProjectTo<Dto>(_mapper.ConfigurationProvider)
+        //ConfigurationProvider = AutoMapperProfile configurations (Helpers Folder)
+
+        //Get Users
+        public async Task<IEnumerable<MemberDto>> GetMembers()
+        {
+            return await _userRepository.GetMembersAsync();
+        }
+
+        //Get User by name
+        public async Task<MemberDto> GetMember(string username)
+        {
+            return await _userRepository.GetMemberAsync(username);
+        }
     }
 }

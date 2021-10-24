@@ -1,4 +1,5 @@
-﻿using API.Entities;
+﻿using API.DTOs;
+using API.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +26,14 @@ namespace API.Interfaces
         //SaveChanges
         Task<bool> SaveAllAsync();
 
+
+        //**************************************
+        //FOR AutoMapper extensions - MemberDto
+        //**************************************
+        //Get users
+        Task<IEnumerable<MemberDto>> GetMembersAsync();
+
+        //Get user by name
+        Task<MemberDto> GetMemberAsync(string username);
     }
 }
