@@ -1,1 +1,13 @@
-<p>member-list works!</p>
+<!--===========-->
+<!-- All Users -->
+<!--===========-->
+<!-- Member list component -->
+<!-- Display memberCard as listItem -->
+
+<div class="row">
+    <div *ngFor="let member of members" class="col-2">
+        <!-- Pass member data to MemberCard Component-->
+        <app-member-card [member]="member"></app-member-card>
+    </div>
+</div>
+

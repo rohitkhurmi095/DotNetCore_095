@@ -5,6 +5,7 @@ using API.Entities;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace API.Controllers
 
     //Authorize all methods inside this controller
     [Authorize]
+    [EnableCors()]
     public class UsersController : ControllerBase
     {
 

@@ -15,6 +15,7 @@ import { MemberListComponent } from './Components/members/member-list/member-lis
 import { MemberDetailsComponent } from './Components/members/member-details/member-details.component';
 import { ListsComponent } from './Components/lists/lists.component';
 import { MessagesComponent } from './Components/messages/messages.component';
+import { MemberCardComponent } from './Components/members/member-card/member-card.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { MessagesComponent } from './Components/messages/messages.component';
     MemberListComponent,
     MemberDetailsComponent,
     ListsComponent,
-    MessagesComponent
+    MessagesComponent,
+    MemberCardComponent
   ],
   imports: [
     BrowserModule,

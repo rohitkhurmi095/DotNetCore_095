@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Member } from 'src/app/Shared/_models/member';
+import { MemberService } from 'src/app/Shared/_services/member.service';
 
 @Component({
   selector: 'app-member-list',
@@ -7,9 +9,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MemberListComponent implements OnInit {
 
-  constructor() { }
+  //Members(All Members)
+  members:Member[];
 
+
+  //Service Object - DependencyInjection
+  constructor(private memberService:MemberService) { }
+
+  //Load -> when view is fully initialized
   ngOnInit(): void {
+    //Call methods
+    this.getMembers();
+  
   }
+
+  //==========---------
+  //Get Users(Members)
+  //==========---------
+  getMembers(){
+    this.memberService.getMembers().subscribe(res=>{
+      this.members = res;
+    })
+  }
+
 
 }
