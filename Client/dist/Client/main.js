@@ -102,6 +102,83 @@ HomeComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComp
 
 /***/ }),
 
+/***/ "5Fw0":
+/*!*********************************************************!*\
+  !*** ./src/app/Shared/_interceptors/jwt.interceptor.ts ***!
+  \*********************************************************/
+/*! exports provided: JwtInterceptor */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JwtInterceptor", function() { return JwtInterceptor; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _services_account_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../_services/account.service */ "OhjR");
+
+
+//============
+//Interceptor
+//============
+//Interceptor = middleware(used to manipulate request)
+//REQUEST -> INTERCEPTOR(write common code here) -> SERVER
+//-----------
+//manipulate middleware request: req.clone({})
+//check flag in header: req.headers.has('flag')
+//remove flag from header: req.clone({headers: req.headers.delete('flag')})
+//set headers: req.clong({setHeaders:{}})
+//call to next middleware: return next.handle(request)
+//-------------
+class JwtInterceptor {
+    //AccountService (Dependnecy Injection)
+    constructor(accountService) {
+        this.accountService = accountService;
+    }
+    //Interceptor method of HttpInterceptor Interface
+    intercept(request, next) {
+        //request to be manipulated
+        //--------------------------
+        let req;
+        //FROM AccountService
+        //--------------------
+        //currentUser:User type{username,token}
+        let currentUser;
+        //UserLoggedIn => GetCurrentUser
+        //*******************************/
+        //**GET currentUser**
+        this.accountService.CurrentUser.subscribe(res => {
+            currentUser = res;
+            //If User is loggedIn
+            if (currentUser) {
+                // ----- [SET HEADERS] -----
+                //Pass JWT + set'Content-Type:application/json' in headers
+                req = request.clone({
+                    setHeaders: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentUser.token}`
+                    }
+                });
+            }
+            //Else only set ContentType:'application/json' in headers
+            //--------------------------
+            else {
+                //----- [SET HEADERS] -----
+                req = request.clone({
+                    setHeaders: { 'Content-Type': 'application/json' }
+                });
+            }
+        });
+        //Call to next middleware
+        //========================
+        //(req = manipulated request)
+        return next.handle(req);
+    }
+}
+JwtInterceptor.ɵfac = function JwtInterceptor_Factory(t) { return new (t || JwtInterceptor)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_services_account_service__WEBPACK_IMPORTED_MODULE_1__["AccountService"])); };
+JwtInterceptor.ɵprov = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: JwtInterceptor, factory: JwtInterceptor.ɵfac });
+
+
+/***/ }),
+
 /***/ "AytR":
 /*!*****************************************!*\
   !*** ./src/environments/environment.ts ***!
@@ -337,7 +414,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_members_member_details_member_details_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Components/members/member-details/member-details.component */ "ibBO");
 /* harmony import */ var _Components_lists_lists_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./Components/lists/lists.component */ "nynr");
 /* harmony import */ var _Components_messages_messages_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./Components/messages/messages.component */ "slVL");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _Components_members_member_card_member_card_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./Components/members/member-card/member-card.component */ "iMh0");
+/* harmony import */ var _Shared_interceptors_jwt_interceptor__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./Shared/_interceptors/jwt.interceptor */ "5Fw0");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @angular/core */ "fXoL");
+
+
+//Modules
+
+
+
+
+//Components
 
 
 
@@ -347,18 +434,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-
-
+//Interceptor (Middleware)
 
 
 
 class AppModule {
 }
 AppModule.ɵfac = function AppModule_Factory(t) { return new (t || AppModule)(); };
-AppModule.ɵmod = _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵdefineNgModule"]({ type: AppModule, bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_6__["AppComponent"]] });
-AppModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵdefineInjector"]({ providers: [], imports: [[
+AppModule.ɵmod = _angular_core__WEBPACK_IMPORTED_MODULE_16__["ɵɵdefineNgModule"]({ type: AppModule, bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_6__["AppComponent"]] });
+AppModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_16__["ɵɵdefineInjector"]({ providers: [
+        { provide: _angular_common_http__WEBPACK_IMPORTED_MODULE_4__["HTTP_INTERCEPTORS"], useClass: _Shared_interceptors_jwt_interceptor__WEBPACK_IMPORTED_MODULE_15__["JwtInterceptor"], multi: true }
+    ], imports: [[
             _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
             _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_1__["BrowserAnimationsModule"],
             _angular_common_http__WEBPACK_IMPORTED_MODULE_4__["HttpClientModule"],
@@ -369,14 +455,15 @@ AppModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵdefineInjecto
                 positionClass: 'toast-bottom-right'
             })
         ]] });
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_14__["ɵɵsetNgModuleScope"](AppModule, { declarations: [_app_component__WEBPACK_IMPORTED_MODULE_6__["AppComponent"],
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_16__["ɵɵsetNgModuleScope"](AppModule, { declarations: [_app_component__WEBPACK_IMPORTED_MODULE_6__["AppComponent"],
         _Shared_components_nav_nav_component__WEBPACK_IMPORTED_MODULE_7__["NavComponent"],
         _Components_home_home_component__WEBPACK_IMPORTED_MODULE_8__["HomeComponent"],
         _Components_resister_resister_component__WEBPACK_IMPORTED_MODULE_9__["ResisterComponent"],
         _Components_members_member_list_member_list_component__WEBPACK_IMPORTED_MODULE_10__["MemberListComponent"],
         _Components_members_member_details_member_details_component__WEBPACK_IMPORTED_MODULE_11__["MemberDetailsComponent"],
         _Components_lists_lists_component__WEBPACK_IMPORTED_MODULE_12__["ListsComponent"],
-        _Components_messages_messages_component__WEBPACK_IMPORTED_MODULE_13__["MessagesComponent"]], imports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
+        _Components_messages_messages_component__WEBPACK_IMPORTED_MODULE_13__["MessagesComponent"],
+        _Components_members_member_card_member_card_component__WEBPACK_IMPORTED_MODULE_14__["MemberCardComponent"]], imports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
         _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_1__["BrowserAnimationsModule"],
         _angular_common_http__WEBPACK_IMPORTED_MODULE_4__["HttpClientModule"],
         _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"],
@@ -548,60 +635,6 @@ NavComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCompo
 
 /***/ }),
 
-/***/ "ckG1":
-/*!*****************************************************!*\
-  !*** ./src/app/Shared/_services/members.service.ts ***!
-  \*****************************************************/
-/*! exports provided: MembersService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MembersService", function() { return MembersService; });
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/common/http */ "IheW");
-/* harmony import */ var _global__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../global */ "WQwO");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "fXoL");
-
-
-
-
-//===========
-//Http Header
-//===========
-//Requires JWT Token => Pass JWT in Headers
-//**Get Token from user.Token in localStorage (current user login)**
-//Pass Token in Header: {Authorization: Bearer Token}
-const httpOptions = {
-    headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_0__["HttpHeaders"]({
-        Authorization: 'Bearer' + JSON.parse(localStorage.getItem('user')).token
-    })
-};
-class MembersService {
-    //Http -> handling http requests
-    constructor(http) {
-        this.http = http;
-    }
-    //___________
-    //Get Users
-    //___________
-    //Type: Member[]
-    getMembers() {
-        return this.http.get(_global__WEBPACK_IMPORTED_MODULE_1__["Global"].BASE_API_PATH + 'users', httpOptions);
-    }
-    //_________________
-    //Get User by name
-    //_________________
-    //Type: Member
-    getMember(username) {
-        return this.http.get(_global__WEBPACK_IMPORTED_MODULE_1__["Global"].BASE_API_PATH + 'users/' + username, httpOptions);
-    }
-}
-MembersService.ɵfac = function MembersService_Factory(t) { return new (t || MembersService)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_0__["HttpClient"])); };
-MembersService.ɵprov = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineInjectable"]({ token: MembersService, factory: MembersService.ɵfac, providedIn: 'root' });
-
-
-/***/ }),
-
 /***/ "g99/":
 /*!***********************************************************!*\
   !*** ./src/app/Components/resister/resister.component.ts ***!
@@ -702,6 +735,70 @@ ResisterComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefine
 
 /***/ }),
 
+/***/ "iMh0":
+/*!*************************************************************************!*\
+  !*** ./src/app/Components/members/member-card/member-card.component.ts ***!
+  \*************************************************************************/
+/*! exports provided: MemberCardComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MemberCardComponent", function() { return MemberCardComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "fXoL");
+
+class MemberCardComponent {
+    constructor() { }
+    ngOnInit() {
+    }
+}
+MemberCardComponent.ɵfac = function MemberCardComponent_Factory(t) { return new (t || MemberCardComponent)(); };
+MemberCardComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: MemberCardComponent, selectors: [["app-member-card"]], inputs: { member: "member" }, decls: 19, vars: 4, consts: [[1, "card", "mb-4"], [1, "card-img-wrapper"], [1, "card-img-top", 3, "src", "alt"], [1, "list-inline", "text-center", "animate", "member-icons"], [1, "list-inline-item"], [1, "btn", "btn-primary"], [1, "fa", "fa-user"], [1, "fa", "fa-heart"], [1, "fa", "fa-envelope"], [1, "card-body", "p-1"], [1, "card-title", "text-center", "mb-1"], [1, "fa", "fa-user", "mr-2"], [1, "card-text", "text-muted", "text-center"]], template: function MemberCardComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](2, "img", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "ul", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](4, "li", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](5, "button", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](6, "i", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](7, "li", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](8, "button", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](9, "i", 7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](10, "li", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](11, "button", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](12, "i", 8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](13, "div", 9);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](14, "h6", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](15, "i", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](16);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](17, "p", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](18);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    } if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpropertyInterpolate"]("src", ctx.member.photoUrl, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsanitizeUrl"]);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpropertyInterpolate"]("alt", ctx.member.knownAs);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](14);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx.member.knownAs);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx.member.city);
+    } }, styles: [".card[_ngcontent-%COMP%]:hover   img[_ngcontent-%COMP%]{\r\n    transform: scale(1.2,1.2);\r\n    transition-duration: 500ms;\r\n    transition-timing-function: ease-out;\r\n    opacity: 0.7;\r\n}\r\n\r\n.card[_ngcontent-%COMP%]   img[_ngcontent-%COMP%]{\r\n    transform: scale(1.0,1.0);\r\n    transition-duration: 500ms;\r\n    transition-timing-function: ease-out;\r\n}\r\n\r\n.card-img-wrapper[_ngcontent-%COMP%]{\r\n    overflow: hidden;\r\n    position: relative; \r\n}\r\n\r\n\r\n\r\n.member-icons[_ngcontent-%COMP%]{\r\n    position: absolute;\r\n    bottom: -30%;\r\n    left: 0;\r\n    right: 0;\r\n    margin-right: auto;\r\n    margin-left: auto;\r\n    opacity: 0;\r\n}\r\n.card-img-wrapper[_ngcontent-%COMP%]:hover   .member-icons[_ngcontent-%COMP%]{\r\n    bottom: 0;\r\n    opacity: 1;\r\n}\r\n.animate[_ngcontent-%COMP%]{\r\n    transition: all 0.3 ease-in-out;\r\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm1lbWJlci1jYXJkLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsV0FBVztBQUNYLFVBQVU7QUFDVixTQUFTO0FBQ1Qsc0JBQXNCO0FBQ3RCO0lBQ0kseUJBQXlCO0lBQ3pCLDBCQUEwQjtJQUMxQixvQ0FBb0M7SUFDcEMsWUFBWTtBQUNoQjtBQUVBLGlCQUFpQjtBQUNqQjtJQUNJLHlCQUF5QjtJQUN6QiwwQkFBMEI7SUFDMUIsb0NBQW9DO0FBQ3hDO0FBRUEsa0JBQWtCO0FBQ2xCO0lBQ0ksZ0JBQWdCO0lBQ2hCLGtCQUFrQixFQUFFLHdCQUF3QjtBQUNoRDtBQUlBLGlCQUFpQjtBQUNqQixpQkFBaUI7QUFDakIsZ0JBQWdCO0FBQ2hCO0lBQ0ksa0JBQWtCLENBQUMsMEJBQTBCO0lBQzdDLFlBQVk7SUFDWixPQUFPO0lBQ1AsUUFBUTtJQUNSLGtCQUFrQjtJQUNsQixpQkFBaUI7SUFDakIsVUFBVTtBQUNkO0FBRUE7SUFDSSxTQUFTO0lBQ1QsVUFBVTtBQUNkO0FBRUE7SUFDSSwrQkFBK0I7QUFDbkMiLCJmaWxlIjoibWVtYmVyLWNhcmQuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qPT09PT09PT0qL1xyXG4vKiBQaG90byAqL1xyXG4vKj09PT09PSovXHJcbi8qSW1hZ2UgaG92ZXI6IFpvb21JbiovXHJcbi5jYXJkOmhvdmVyIGltZ3tcclxuICAgIHRyYW5zZm9ybTogc2NhbGUoMS4yLDEuMik7XHJcbiAgICB0cmFuc2l0aW9uLWR1cmF0aW9uOiA1MDBtcztcclxuICAgIHRyYW5zaXRpb24tdGltaW5nLWZ1bmN0aW9uOiBlYXNlLW91dDtcclxuICAgIG9wYWNpdHk6IDAuNztcclxufVxyXG5cclxuLypJbWFnZTogWm9vbU91dCovXHJcbi5jYXJkIGltZ3tcclxuICAgIHRyYW5zZm9ybTogc2NhbGUoMS4wLDEuMCk7XHJcbiAgICB0cmFuc2l0aW9uLWR1cmF0aW9uOiA1MDBtcztcclxuICAgIHRyYW5zaXRpb24tdGltaW5nLWZ1bmN0aW9uOiBlYXNlLW91dDtcclxufVxyXG5cclxuLypPdmVyZmxvdzpoaWRkZW4qL1xyXG4uY2FyZC1pbWctd3JhcHBlcntcclxuICAgIG92ZXJmbG93OiBoaWRkZW47XHJcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7IC8qd3J0IHRvIHVsIGZvciBidXR0b25zKi9cclxufVxyXG5cclxuXHJcblxyXG4vKj09PT09PT09PT09PT09Ki9cclxuLyp1bCBmb3IgYnV0dG9ucyovXHJcbi8qPT09PT09PT09PT09PSovXHJcbi5tZW1iZXItaWNvbnN7XHJcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7Lyp3cnQgdG8gY2FyZC1pbWctd3JhcHBlciovXHJcbiAgICBib3R0b206IC0zMCU7XHJcbiAgICBsZWZ0OiAwO1xyXG4gICAgcmlnaHQ6IDA7XHJcbiAgICBtYXJnaW4tcmlnaHQ6IGF1dG87XHJcbiAgICBtYXJnaW4tbGVmdDogYXV0bztcclxuICAgIG9wYWNpdHk6IDA7XHJcbn1cclxuXHJcbi5jYXJkLWltZy13cmFwcGVyOmhvdmVyIC5tZW1iZXItaWNvbnN7XHJcbiAgICBib3R0b206IDA7XHJcbiAgICBvcGFjaXR5OiAxO1xyXG59XHJcblxyXG4uYW5pbWF0ZXtcclxuICAgIHRyYW5zaXRpb246IGFsbCAwLjMgZWFzZS1pbi1vdXQ7XHJcbn0iXX0= */"] });
+
+
+/***/ }),
+
 /***/ "ibBO":
 /*!*******************************************************************************!*\
   !*** ./src/app/Components/members/member-details/member-details.component.ts ***!
@@ -783,6 +880,62 @@ MessagesComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefine
 
 /***/ }),
 
+/***/ "tsQB":
+/*!****************************************************!*\
+  !*** ./src/app/Shared/_services/member.service.ts ***!
+  \****************************************************/
+/*! exports provided: MemberService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MemberService", function() { return MemberService; });
+/* harmony import */ var _global__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../global */ "WQwO");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "IheW");
+
+
+
+//===========
+//Http Header
+//===========
+//INTERCEPTORS - used for setting headers
+//If Interceptor not used -> pass httpOptions in service method
+//--------------
+//Requires JWT Token => Pass JWT in Headers
+//**Get Token from user.Token in localStorage (current user login)**
+//Pass Token in Header: {Authorization: Bearer Token}
+/*const httpOptions = {
+  headers: new HttpHeaders({
+    'Authorization': 'Bearer '+JSON.parse(localStorage.getItem('user')).token
+  })
+}*/
+class MemberService {
+    //HttpClient - for requests
+    constructor(http) {
+        this.http = http;
+    }
+    //___________
+    //Get Users
+    //___________
+    //Type: Member[]
+    getMembers() {
+        return this.http.get(_global__WEBPACK_IMPORTED_MODULE_0__["Global"].BASE_API_PATH + 'users/');
+    }
+    //_________________
+    //Get User by name
+    //_________________
+    //Type: Member
+    getMember(username) {
+        return this.http.get(_global__WEBPACK_IMPORTED_MODULE_0__["Global"].BASE_API_PATH + 'user/' + username);
+    }
+}
+MemberService.ɵfac = function MemberService_Factory(t) { return new (t || MemberService)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"])); };
+MemberService.ɵprov = _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"]({ token: MemberService, factory: MemberService.ɵfac, providedIn: 'root' });
+
+
+/***/ }),
+
 /***/ "uFKN":
 /*!*************************************************************************!*\
   !*** ./src/app/Components/members/member-list/member-list.component.ts ***!
@@ -794,50 +947,50 @@ MessagesComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefine
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MemberListComponent", function() { return MemberListComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "fXoL");
-/* harmony import */ var _Shared_services_members_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Shared/_services/members.service */ "ckG1");
+/* harmony import */ var src_app_Shared_services_member_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! src/app/Shared/_services/member.service */ "tsQB");
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ "ofXK");
+/* harmony import */ var _member_card_member_card_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../member-card/member-card.component */ "iMh0");
 
 
 
-function MemberListComponent_p_2_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "p");
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
+
+function MemberListComponent_div_1_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](1, "app-member-card", 3);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 } if (rf & 2) {
     const member_r1 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](member_r1.knownAs);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("member", member_r1);
 } }
 class MemberListComponent {
     //Service Object - DependencyInjection
-    constructor(membersService) {
-        this.membersService = membersService;
+    constructor(memberService) {
+        this.memberService = memberService;
     }
     //Load -> when view is fully initialized
     ngOnInit() {
         //Call methods
         this.getMembers();
     }
-    //==========
-    //Get Users
-    //==========
+    //==========---------
+    //Get Users(Members)
+    //==========---------
     getMembers() {
-        this.membersService.getMembers().subscribe(res => {
+        this.memberService.getMembers().subscribe(res => {
             this.members = res;
         });
     }
 }
-MemberListComponent.ɵfac = function MemberListComponent_Factory(t) { return new (t || MemberListComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_Shared_services_members_service__WEBPACK_IMPORTED_MODULE_1__["MembersService"])); };
-MemberListComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: MemberListComponent, selectors: [["app-member-list"]], decls: 3, vars: 1, consts: [[1, "row"], [1, "col-2"], [4, "ngFor", "ngForOf"]], template: function MemberListComponent_Template(rf, ctx) { if (rf & 1) {
+MemberListComponent.ɵfac = function MemberListComponent_Factory(t) { return new (t || MemberListComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](src_app_Shared_services_member_service__WEBPACK_IMPORTED_MODULE_1__["MemberService"])); };
+MemberListComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: MemberListComponent, selectors: [["app-member-list"]], decls: 2, vars: 1, consts: [[1, "row"], ["class", "col-2", 4, "ngFor", "ngForOf"], [1, "col-2"], [3, "member"]], template: function MemberListComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, MemberListComponent_p_2_Template, 2, 1, "p", 2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, MemberListComponent_div_1_Template, 2, 1, "div", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     } if (rf & 2) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx.members);
-    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_2__["NgForOf"]], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJtZW1iZXItbGlzdC5jb21wb25lbnQuY3NzIn0= */"] });
+    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_2__["NgForOf"], _member_card_member_card_component__WEBPACK_IMPORTED_MODULE_3__["MemberCardComponent"]], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJtZW1iZXItbGlzdC5jb21wb25lbnQuY3NzIn0= */"] });
 
 
 /***/ }),

@@ -8,14 +8,17 @@ import { Observable } from 'rxjs';
 //===========
 //Http Header
 //===========
+//INTERCEPTORS - used for setting headers
+//If Interceptor not used -> pass httpOptions in service method
+//--------------
 //Requires JWT Token => Pass JWT in Headers
 //**Get Token from user.Token in localStorage (current user login)**
 //Pass Token in Header: {Authorization: Bearer Token}
-const httpOptions = {
+/*const httpOptions = {
   headers: new HttpHeaders({
     'Authorization': 'Bearer '+JSON.parse(localStorage.getItem('user')).token
   })
-}
+}*/
 
 
 @Injectable({
@@ -32,7 +35,7 @@ export class MemberService {
   //___________
   //Type: Member[]
   getMembers():Observable<Member[]>{
-    return this.http.get<Member[]>(Global.BASE_API_PATH + 'users/',httpOptions);
+    return this.http.get<Member[]>(Global.BASE_API_PATH + 'users/');
   }
   
     
@@ -41,6 +44,6 @@ export class MemberService {
   //_________________
   //Type: Member
   getMember(username:string):Observable<Member>{
-    return this.http.get<Member>(Global.BASE_API_PATH + 'user/'+username,httpOptions);
+    return this.http.get<Member>(Global.BASE_API_PATH + 'user/'+username);
   }
 }
