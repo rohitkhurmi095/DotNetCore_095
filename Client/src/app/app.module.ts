@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {ToastrModule} from 'ngx-toastr';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 //Components
 import { AppComponent } from './app.component';
@@ -44,7 +45,9 @@ import { JwtInterceptor } from './Shared/_interceptors/jwt.interceptor';
     //ToastrModule
     ToastrModule.forRoot({
       positionClass:'toast-bottom-right'
-    })
+    }),
+    //ngx-bootstrap Tabs Module
+    TabsModule.forRoot()
   ],
 
   //Provide interceptors used here

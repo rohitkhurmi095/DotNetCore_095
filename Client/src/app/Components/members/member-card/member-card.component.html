@@ -11,8 +11,9 @@
         <!-- here ul: absolute, card-img-wrapper:relative -->
         <!-- animate,member-icons class from css file-->
         <ul class="list-inline text-center animate member-icons">
+            <!-- {/members/username} -->
             <li class="list-inline-item">
-               <button class="btn btn-primary"><i class="fa fa-user"></i></button>
+               <button class="btn btn-primary" routerLink="/members/{{member.username}}"><i class="fa fa-user"></i></button>
             </li>
             <li class="list-inline-item">
                 <button class="btn btn-primary"><i class="fa fa-heart"></i></button>

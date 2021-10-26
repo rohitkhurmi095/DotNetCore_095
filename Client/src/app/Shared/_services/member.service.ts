@@ -44,6 +44,6 @@ export class MemberService {
   //_________________
   //Type: Member
   getMember(username:string):Observable<Member>{
-    return this.http.get<Member>(Global.BASE_API_PATH + 'user/'+username);
+    return this.http.get<Member>(Global.BASE_API_PATH + 'users/'+username);
   }
 }

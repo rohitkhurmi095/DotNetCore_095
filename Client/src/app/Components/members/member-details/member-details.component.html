@@ -1,1 +1,76 @@
-<p>member-details works!</p>
+<!--================-->
+<!-- MEMBER DETAILS -->
+<!--================-->
+
+<div class="row" *ngIf="member">
+    <!--------------------------->
+    <!-- Details (left 4 columns)-->
+    <!--------------------------->
+    <div class="col-4">
+        
+        <!--===== DETAILS CARD =====-->
+        <div class="card">
+            <!-- CARD IMAGE -->
+            <img src="{{member.photoUrl || './assets/images/user.png'}}" alt="{{member.knownAs}}" class="card-img-top img-thumbnail">
+        
+            <!-- CARD BODY-->
+            <div class="card-body">
+                <div>
+                    <strong>Location:</strong>
+                    <p>{{member.country}}, {{member.city}}</p>
+                </div>
+                <div>
+                    <strong>Age:</strong>
+                    <p>{{member.age}}</p>
+                </div>
+                <div>
+                    <strong>Last Active:</strong>
+                    <p>{{member.lastActive }}</p>
+                </div>
+                <div>
+                    <strong>Member since:</strong>
+                    <p>{{member.created | date:'dd/MM/yyyy'}}</p>
+                </div>
+            </div>
+
+            <!-- CARD FOOTER -->
+            <div class="card-footer">
+                <div class="btn-group d-flex">
+                    <button class="btn btn-primary">Like</button>
+                    <button class="btn btn-success">Message</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!--------------------------->
+    <!-- TABSET(right 8 colums)-->
+    <!--------------------------->
+    <div class="col-8">
+        <tabset class="member-tabset">
+            <!-- tab1-->
+            <tab heading="About {{member.knownAs}}">
+                <h4>Description</h4>
+                <p>{{member.introduction}}</p>
+                <h4>Looking For</h4>
+                <p>{{member.lookingFor}}</p>
+            </tab>
+            <!-- tab2-->
+            <tab heading="Interests">
+                <h4>Interests</h4>
+                <p>{{member.interests}}</p>
+            </tab>
+            <!-- tab3-->
+            <tab heading="Photos">
+                <p>Photos will go here</p>
+            </tab>
+            <!--tab4-->
+            <tab heading="Messages">
+                <p>Messages will go here</p>
+            </tab>
+        </tabset>
+    </div>
+       
+</div>
