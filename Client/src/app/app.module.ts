@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {ToastrModule} from 'ngx-toastr';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
 //Components
 import { AppComponent } from './app.component';
@@ -47,7 +48,9 @@ import { JwtInterceptor } from './Shared/_interceptors/jwt.interceptor';
       positionClass:'toast-bottom-right'
     }),
     //ngx-bootstrap Tabs Module
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    //PhotoGallery
+    NgxGalleryModule
   ],
 
   //Provide interceptors used here

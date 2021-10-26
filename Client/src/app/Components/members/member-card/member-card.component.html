@@ -5,7 +5,7 @@
 <div class="card mb-4">
     <!--Photo-->
     <div class="card-img-wrapper">
-        <img src="{{member.photoUrl}}" alt="{{member.knownAs}}" class="card-img-top">
+        <img src="{{member.photoUrl || './assets/images/user.png'}}" alt="{{member.knownAs}}" class="card-img-top">
         
         <!-- Buttons appear over image when we hover over image-->
         <!-- here ul: absolute, card-img-wrapper:relative -->

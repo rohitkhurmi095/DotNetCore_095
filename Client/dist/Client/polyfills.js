@@ -7,7 +7,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\PROJECTS\DatingApp\DatingApp\Client\src\polyfills.ts */"hN/g");
+module.exports = __webpack_require__(/*! D:\PROJECTS\DatingApp\DatingApp\client\src\polyfills.ts */"hN/g");
 
 
 /***/ }),
