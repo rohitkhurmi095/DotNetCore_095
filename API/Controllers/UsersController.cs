@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -47,7 +48,7 @@ namespace API.Controllers
         //_______________
         // GET All Users
         //_______________
-        [HttpGet]
+        /*[HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
         {
             var users = await _userRepository.GetUsersAsync();
@@ -57,13 +58,13 @@ namespace API.Controllers
 
             //return users (members Dto)
             return Ok(usersToReturn);
-        }
+        }*/
 
 
         //_________________
         // GET User by name
         //_________________
-        [HttpGet("{username}")]
+        /*[HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             var user = await _userRepository.GetUserByUsernameAsync(username);
@@ -75,7 +76,7 @@ namespace API.Controllers
             //return User(MemberDto)
             return userToReturn;
 
-        }
+        }*/
 
 
 
@@ -86,16 +87,59 @@ namespace API.Controllers
         //ProjectTo<Dto>(_mapper.ConfigurationProvider)
         //ConfigurationProvider = AutoMapperProfile configurations (Helpers Folder)
 
+        //==========
         //Get Users
-        public async Task<IEnumerable<MemberDto>> GetMembers()
+        //==========
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetMembers()
         {
-            return await _userRepository.GetMembersAsync();
+            var users = await _userRepository.GetMembersAsync();
+            return Ok(users);
         }
 
-        //Get User by name
-        public async Task<MemberDto> GetMember(string username)
+
+        //=====================
+        //Get User by username
+        //=====================
+        [HttpGet("{username}")]
+        public async Task<ActionResult<MemberDto>> GetMember(string username)
         {
             return await _userRepository.GetMemberAsync(username);
         }
+
+
+        //============
+        //Update User
+        //============
+        [HttpPut]
+        public async Task<ActionResult> UpdateMember(MemberUpdateDto memberUpdateDto)
+        {
+            //when user login 
+            //GET username from authenticated user token
+            //------------
+            //ClaimTypes = info about identity
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            //Get User by username
+            //--------
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+
+            //Update mapping properties
+            //--------------------------
+            //Eg: user.City = MemberUpdateDto.City 
+            //Done Automatically using Automapper
+            //MAP memberUpdateDto <-> User
+            _mapper.Map(memberUpdateDto,  user);
+
+            //UPDATE User
+            //------------
+            _userRepository.Update(user);
+
+            //IF user updated => return NoContent(status = 204)
+            if(await _userRepository.SaveAllAsync()){return NoContent();}
+            //Else return BadRequest()
+            return BadRequest("Failed to update user!");
+        }
+
     }
 }

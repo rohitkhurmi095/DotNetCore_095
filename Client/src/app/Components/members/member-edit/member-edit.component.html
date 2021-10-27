@@ -1,0 +1,119 @@
+<!--================-->
+<!-- MEMBER DETAILS -->
+<!--================-->
+<div class="row" *ngIf="member">
+
+    <!-- Row1 -->
+    <!--=======-->
+    <div class="col-4">
+        <h1>Your Profile</h1>
+    </div>
+    <div class="col-8">
+        <div class="alert alert-info" *ngIf="editForm.dirty">
+            <strong>Information: </strong> You have made changes. Any unsaved changes will be lost
+        </div>
+    </div>
+
+
+
+    <!-- Row2 -->
+    <!--======-->
+    <!--------------------------->
+    <!--Details (left 4 columns)-->
+    <!--------------------------->
+    <div class="col-4">
+        
+        <!--===== DETAILS CARD =====-->
+        <div class="card">
+            <!-- CARD IMAGE -->
+            <img src="{{member.photoUrl || './assets/images/user.png'}}" alt="{{member.knownAs}}" class="card-img-top img-thumbnail">
+        
+            <!-- CARD BODY-->
+            <div class="card-body">
+                <div>
+                    <strong>Location:</strong>
+                    <p>{{member.country}}, {{member.city}}</p>
+                </div>
+                <div>
+                    <strong>Age:</strong>
+                    <p>{{member.age}}</p>
+                </div>
+                <div>
+                    <strong>Last Active:</strong>
+                    <p>{{member.lastActive }}</p>
+                </div>
+                <div>
+                    <strong>Member since:</strong>
+                    <p>{{member.created | date:'dd/MM/yyyy'}}</p>
+                </div>
+            </div>
+
+            <!-- CARD FOOTER -->
+            <div class="card-footer">
+                <!--*****NOTE:*****-->
+                <!-- This button is placed outside the EditForm-->
+                <!-- This button is used to Submit EditForm-->
+                <!-- editForm.dirty => some data is updated/Changed -->
+                <!-- <form #formId="ngForm" id="formId" (ngSubmit)="updateProfile()"></form> -->
+                <!-- <button type="submit" form="formId">Save Changes</button>-->
+
+                <button form="editForm" type="submit" [disabled]="!editForm.dirty" class="btn btn-success btn-block">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!--------------------------->
+    <!-- TABSET(right 8 colums)-->
+    <!--------------------------->
+    <div class="col-8">
+        <tabset class="member-tabset">
+    
+            <!--=======-->
+            <!-- tab1  -->
+            <!--=======-->
+            <tab heading="About {{member.knownAs}}">
+                
+                <!--Angular: Template Form -->
+                <!-- EDIT Details Form -->
+                <!--===================--> 
+                <form #editForm="ngForm" id="editForm" (ngSubmit)="updateProfile()">
+
+                    <!-- Introduction -->
+                    <h4>Description</h4>
+                    <textarea rows="6" class="form-control"  name="introduction"  [(ngModel)]="member.introduction"></textarea>
+                    
+                    <!-- LookingFor-->
+                    <h4 class="mt-2">Looking For</h4>
+                    <textarea rows="6" class="form-control" name="lookingFor" [(ngModel)]="member.lookingFor"></textarea>
+                   
+                    <!--InTerests-->
+                    <h4 class="mt-2">Interests</h4>
+                    <textarea rows="6" class="form-control" name="interests" [(ngModel)]="member.interests"></textarea>
+
+                    <!--Location-->
+                    <h4 class="mt-2">Location Details:</h4>
+                    <div class="form-inline">
+                        <!--city-->
+                        <label for="city">City:</label>
+                        <input type="text"  class="form-control mx-2" name="city" [(ngModel)]="member.city">
+                        <!-- country-->
+                        <label for="country">Country</label>
+                        <input type="text" class="form-control mx-2" name="country" [(ngModel)]="member.country">
+                    </div>
+                </form>
+
+            </tab>
+
+
+            <!--=======-->
+            <!-- tab2  -->
+            <!--=======-->
+            <tab heading="Edit Photos">
+               <p>Edit Photo here</p>
+            </tab>
+           
+        </tabset>
+    </div>
+       
+</div>

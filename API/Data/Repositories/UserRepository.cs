@@ -71,7 +71,7 @@ namespace API.Data.Repositories
         //SAVE CHANGES
         //*************
         //saveChangesAsync() - returns numeric value 
-        //saveChangesAsync() > 0 => boolean value
+        //saveChangesAsync() > 0 => boolean value(true/false)
         public async Task<bool> SaveAllAsync()
         {
             return await _context.SaveChangesAsync() > 0;

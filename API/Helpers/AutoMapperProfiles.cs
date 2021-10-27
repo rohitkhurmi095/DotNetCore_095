@@ -20,7 +20,7 @@ namespace API.Helpers
     {
         public AutoMapperProfiles()
         {
-            //UserEntity <-> UserDto
+            //UserEntity <-> MemberDto
             //-----------------------
             //1.Populate main PhotoUrl - using ForMember()
             //2.Populate Age - using calculateAge() Helper method
@@ -35,6 +35,11 @@ namespace API.Helpers
             //PhotoEntity <-> PhotoDto
             //-------------------------
             CreateMap<Photo, PhotoDto>();
+
+
+            //MemberUpdateDto <-> UserEntity
+            //-------------------------------
+            CreateMap<MemberUpdateDto, User>();
         }
 
     }

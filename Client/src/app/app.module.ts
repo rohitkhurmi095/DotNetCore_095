@@ -23,6 +23,7 @@ import { MemberCardComponent } from './Components/members/member-card/member-car
 
 //Interceptor (Middleware)
 import { JwtInterceptor } from './Shared/_interceptors/jwt.interceptor';
+import { MemberEditComponent } from './Components/members/member-edit/member-edit.component';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { JwtInterceptor } from './Shared/_interceptors/jwt.interceptor';
     MemberDetailsComponent,
     ListsComponent,
     MessagesComponent,
-    MemberCardComponent
+    MemberCardComponent,
+    MemberEditComponent
   ],
   imports: [
     BrowserModule,
