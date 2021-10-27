@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Member } from 'src/app/Shared/_models/member';
@@ -21,11 +21,22 @@ export class MemberEditComponent implements OnInit {
   //Form ref = #editForm=(ngForm)
   @ViewChild('editForm') editForm:NgForm;
 
-
+  
   //currentUser
   user:User;
   //Member
   member:Member;
+
+
+  //Cancel form Action
+  //--------------------
+  //If user tries to move to Close tab without saving changes in EditForm
+  @HostListener('window:beforeunload', ['$event']) unloadNotification($event:any){
+    if(this.editForm.dirty){
+      $event.returnValue = true;
+    }
+  };
+
 
   //DependencyInjection
   constructor(private accountService:AccountService,private memberService:MemberService,private toastr:ToastrService) {
