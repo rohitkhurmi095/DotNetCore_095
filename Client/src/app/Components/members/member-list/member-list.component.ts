@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Member } from 'src/app/Shared/_models/member';
 import { MemberService } from 'src/app/Shared/_services/member.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-member-list',
@@ -9,28 +10,22 @@ import { MemberService } from 'src/app/Shared/_services/member.service';
 })
 export class MemberListComponent implements OnInit {
 
-  //Members(All Members)
-  members:Member[];
+  //Members(All Members):Observable
+  members:Observable<Member[]>;
 
 
   //Service Object - DependencyInjection
-  constructor(private memberService:MemberService) { }
+  constructor(private memberService:MemberService) {
+      
+        //==========---------
+       //Get Users(Members)
+      //==========-----------
+      this.members = this.memberService.getMembers();
+   }
 
   //Load -> when view is fully initialized
   ngOnInit(): void {
-    //Call methods
-    this.getMembers();
   
   }
-
-  //==========---------
-  //Get Users(Members)
-  //==========---------
-  getMembers(){
-    this.memberService.getMembers().subscribe(res=>{
-      this.members = res;
-    })
-  }
-
 
 }

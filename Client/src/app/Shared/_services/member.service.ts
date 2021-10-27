@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Member} from '../_models/member';
 import { Global } from '../global';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import {map} from 'rxjs/operators';
 
 //===========
 //Http Header
@@ -26,33 +27,74 @@ import { Observable } from 'rxjs';
 })
 export class MemberService {
 
+  
+  //**[ STORE Members data STATE ]**
+  //Members[]
+  members:Member[];
+
   //HttpClient - for requests
   constructor(private http:HttpClient) { }
 
   
   //___________
   //Get Users
-  //___________
+  //===========
   //Type: Member[]
+  //of(data) - converts data to observable type
   getMembers():Observable<Member[]>{
-    return this.http.get<Member[]>(Global.BASE_API_PATH + 'users/');
-  }
-  
     
+    //if there is members in members[] => return members
+    if(this.members?.length>0){
+      return of(this.members);
+    }
+
+    //else call API + return members(res)
+    return this.http.get<Member[]>(Global.BASE_API_PATH + 'users/').pipe(
+      map(res=>{
+        this.members = res;
+        //members 
+        return res;
+      })
+    );
+  }
+
+
+
+
   //_________________
   //Get User by name
-  //_________________
+  //=================
   //Type: Member
   getMember(username:string):Observable<Member>{
+
+    //Find member in members[]
+    const member = this.members.find(x=>x.username === username);
+
+    //If member is found => return member
+    if(member!=undefined){
+      return of(member);
+    }
+
+    //Else call API + Get member by username
     return this.http.get<Member>(Global.BASE_API_PATH + 'users/'+username);
   }
 
 
+
+
   //_____________________________
   //Update LoggedIn User Profile
-  //_____________________________
+  //=============================
   //Type:Member
+  //doesn't return any data => status:204 NoContent()
   updateMember(member:Member):Observable<any>{
-    return this.http.put<any>(Global.BASE_API_PATH + 'users',member);
+    return this.http.put<any>(Global.BASE_API_PATH + 'users',member).pipe(
+      map(()=>{
+        //1.Find the Index of member to be updated
+        const index = this.members.indexOf(member);
+        //2.Update member at that index
+        this.members[index] = member;
+      })
+    );
   }
 }
