@@ -13,5 +13,8 @@ namespace API.DTOs
 
         //JwtToken
         public string Token { get; set; }
+
+        //PhotoUrl(Main Photo)
+        public string PhotoUrl { get; set; }
     }
 }

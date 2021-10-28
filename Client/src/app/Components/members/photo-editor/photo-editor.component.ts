@@ -2,8 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FileUploader, FileUploadModule } from 'ng2-file-upload';
 import { Global } from 'src/app/Shared/global';
 import { Member } from 'src/app/Shared/_models/member';
+import { Photo } from 'src/app/Shared/_models/photo';
 import { User } from 'src/app/Shared/_models/user';
 import { AccountService } from 'src/app/Shared/_services/account.service';
+import { MemberService } from 'src/app/Shared/_services/member.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -28,8 +30,8 @@ export class PhotoEditorComponent implements OnInit {
   
 
 
-  //AccountService
-  constructor(private accountService:AccountService) {
+  //AccountService,MemberService
+  constructor(private accountService:AccountService,private memberService:MemberService) {
     //-----------
     //CurrentUser
     //------------
@@ -45,7 +47,41 @@ export class PhotoEditorComponent implements OnInit {
     this.initializeUploader();
   }
 
+
+
+  //___________________
+  //** SetMainPhoto **
+  //===================
+  setMainPhoto(photo:Photo){
+    this.memberService.setMainPhoto(photo.id).subscribe(()=>{
+      //::::: USER-----
+      //CurrentUser Photo.Url = SELECTED PhotoUrl
+      this.user.photoUrl = photo.url;
+
+      //UPDATE CURRENT User(SubjectBehaviour + LocalStorage)
+      this.accountService.setCurrentUser(this.user);
+
+      //::::: MEMBER-------
+      //Update Member
+      this.member.photoUrl = photo.url;
+
+      //Go through EACH Photo in member Photos[] collection
+      //if photo IS mainPhoto => SET photo.IsMain = false
+      //Else -> Find Photo with matching Id as photo.Id & SET photo.IsMain = true
+      this.member.photos.forEach(p=>{
+        if(p.isMain){
+          p.isMain = false
+        }
+        if(p.id == photo.id){
+          p.isMain = true;
+        }
+      })
+
+    });
+  }
   
+
+
   //==============
   //FILE UPLOADER
   //==============

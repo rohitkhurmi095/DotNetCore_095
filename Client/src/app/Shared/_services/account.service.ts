@@ -38,8 +38,13 @@ export class AccountService {
   //--------------------
   //used in appComponent to make user loggedIn until logOut is clicked
   //get user from localStorage & pass in this method
+  //SET CURRENT USER = Add to BehaviourSubject + Add to LocalStorage 
   setCurrentUser(user:User){
-    this.currentUser.next(user);
+     //SetCurrent user detais = user in BehaviourSubject
+     this.currentUser.next(user);
+
+     //add user to LocalStorage
+     localStorage.setItem('user',JSON.stringify(user));
   }
 
 
@@ -58,14 +63,11 @@ export class AccountService {
 
         //If **Success** 
         if(user){
-          //SetCurrent user detais = user in BehaviourSubject
-          this.currentUser.next(user);
-
           //Set loggedIn Status = true
           this.loggedIn.next(true);
-          
-          //add user to LocalStorage
-          localStorage.setItem('user',JSON.stringify(user));
+
+          //Set CurrentUser
+          this.setCurrentUser(user);
         }
       })
     );
@@ -84,15 +86,12 @@ export class AccountService {
         const user:User = res;
 
         //If **Success**
-        if(user){
-          //SetCurrent user detais = user in BehaviourSubject
-          this.currentUser.next(user)
-          
+        if(user){          
           //Set loggedIn Status = true
           this.loggedIn.next(true);
 
-          //Add User to LocalStorage
-          localStorage.setItem('user',JSON.stringify(res));
+          //Set CurrentUser
+          this.setCurrentUser(user);
         }
         //optional to show 'res' from API directly without JSON.Stringify(res)
         return user;

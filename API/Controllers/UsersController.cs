@@ -209,6 +209,54 @@ namespace API.Controllers
             //else error
             return BadRequest("Problem Uploading Photo!");
         }
+
+
+
+        //===============
+        //SET Main Photo
+        //===============
+        //Set Photo as mainPhoto from Photos[]
+        [HttpPut("set-main-photo/{photoId}")]
+        public async Task<ActionResult> SetMainPhoto(int photoId)
+        {
+            //when user login 
+            //GET username from authenticated user token(claims)
+            //------------
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            //Get User by username
+            //--------
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+
+
+            //GET LoggedInUser + Find Photo by Id in user(Photos[])
+            //------------------------------------
+            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+
+            //CHECK If Photo Found is mainPhoto
+            //---------------------------------
+            //IF PhotoFound is mainPhoto -> Error(Already mainPhoto)
+            if (photo.IsMain) { return BadRequest("This is already your main Photo"); }
+
+            //ELSE -> Find currentMain Photo,
+            //If currentMainPhoto is there => Set CurrentPhoto(PhotoFound) as mainPhoto
+            //Else error (NoCurrentMainPhoto)
+            var currentMainPhoto = user.Photos.FirstOrDefault(x=>x.IsMain);
+            if(currentMainPhoto != null)
+            {   
+                //SET currentMainPhoto to not main
+                currentMainPhoto.IsMain = false;
+                //Set photo found to main
+                photo.IsMain = true;
+            }
+
+            //SaveChanges
+            //------------
+            //success
+            if(await _userRepository.SaveAllAsync()) { return NoContent(); }
+            //error
+            return BadRequest("Failed to set main Photo");
+        }
     }
-   
+
 }

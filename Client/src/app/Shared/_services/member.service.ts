@@ -97,4 +97,14 @@ export class MemberService {
       })
     );
   }
+
+
+  //==============
+  //SET MainPhoto
+  //==============
+  //Put req => need to send something in body
+  //if noting is there to send => send {} blank object
+  setMainPhoto(photoId:number){
+    return this.http.put(Global.BASE_API_PATH + "users/set-main-photo/"+photoId, {});
+  }
 }

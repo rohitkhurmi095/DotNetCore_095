@@ -95,7 +95,9 @@ namespace API.Controllers
         {
             //FIND User in Database 
             //----------------------
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.UserName);
+            var user = await _context.Users
+                .Include(x=>x.Photos)
+                .SingleOrDefaultAsync(x => x.UserName == loginDto.UserName);
 
             //If User does not exists => Invalid UserName
             //-----------------------
@@ -129,11 +131,14 @@ namespace API.Controllers
             }
 
 
-            //IfValidPassword => return UserDto(UserName+Token)
+            //IfValidPassword => return UserDto(UserName+Token+PhotoUrl(mainPhoto))
             return new UserDto
             {
                 UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+
+                //mainPhoto Url
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
             };
         }
     }
