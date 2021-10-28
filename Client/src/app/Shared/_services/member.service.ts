@@ -68,7 +68,7 @@ export class MemberService {
   getMember(username:string):Observable<Member>{
 
     //Find member in members[]
-    const member = this.members.find(x=>x.username === username);
+    const member = this.members?.find(x=>x.username === username);
 
     //If member is found => return member
     if(member!=undefined){

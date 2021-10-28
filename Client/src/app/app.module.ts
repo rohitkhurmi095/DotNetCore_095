@@ -10,6 +10,7 @@ import {ToastrModule} from 'ngx-toastr';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { FileUploadModule } from 'ng2-file-upload';
 
 //Components
 import { AppComponent } from './app.component';
@@ -27,6 +28,7 @@ import { MemberEditComponent } from './Components/members/member-edit/member-edi
 import { JwtInterceptor } from './Shared/_interceptors/jwt.interceptor';
 import { LoadingInterceptor } from './Shared/_interceptors/loading.interceptor';
 import { PhotoEditorComponent } from './Components/members/photo-editor/photo-editor.component';
+
 
 
 
@@ -59,7 +61,9 @@ import { PhotoEditorComponent } from './Components/members/photo-editor/photo-ed
     //PhotoGallery
     NgxGalleryModule,
     //NgxSpinnerModule
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    //FileUploadModule
+    FileUploadModule
   ],
 
   //Provide interceptors used here
