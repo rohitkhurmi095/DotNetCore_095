@@ -35,13 +35,19 @@ namespace API.Controllers
         //AutoMapper -> IMapper Interface
         //_mapper.Map<What to map>(source of mapping);
         private readonly IMapper _mapper;
-        public UsersController(IUserRepository userRepository, IMapper mapper)
+
+        //PhotoService
+        private readonly IPhotoService _photoService;
+        public UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService)
         {
             //user repository
             _userRepository = userRepository;
 
             //IMapper interface
             _mapper = mapper;
+
+            //IPhoto service
+            _photoService = photoService;
         }
 
 
@@ -115,7 +121,7 @@ namespace API.Controllers
         public async Task<ActionResult> UpdateMember(MemberUpdateDto memberUpdateDto)
         {
             //when user login 
-            //GET username from authenticated user token
+            //GET username from authenticated user token(claims)
             //------------
             //ClaimTypes = info about identity
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -129,17 +135,75 @@ namespace API.Controllers
             //Eg: user.City = MemberUpdateDto.City 
             //Done Automatically using Automapper
             //MAP memberUpdateDto <-> User
-            _mapper.Map(memberUpdateDto,  user);
+            _mapper.Map(memberUpdateDto, user);
 
             //UPDATE User
             //------------
             _userRepository.Update(user);
 
             //IF user updated => return NoContent(status = 204)
-            if(await _userRepository.SaveAllAsync()){return NoContent();}
+            if (await _userRepository.SaveAllAsync()) { return NoContent(); }
             //Else return BadRequest()
             return BadRequest("Failed to update user!");
         }
 
+
+
+
+
+        //===============
+        //UPLOAD Photo
+        //===============
+        [HttpPost("add-photo")]
+        public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
+        {
+            //when user login 
+            //GET username from authenticated user token(claims)
+            //------------
+            //ClaimTypes = info about identity
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            //Get User by username
+            //--------
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+
+            //UPLOAD PHOTO
+            //**************
+            //result = photo Object 
+            var result = await _photoService.AddPhotoAsync(file);
+
+            //if error -> ErrorMessage
+            if (result.Error != null) return BadRequest(result.Error.Message);
+
+            //else -> CREATE Photo
+            var photo = new Photo
+            {
+                //url
+                Url = result.SecureUrl.AbsoluteUri,
+                //publicId (Cloudinary)
+                PublicId = result.PublicId
+            };
+
+            //CHECK if user Photos[] does not have photo => set photo as MainPhoto
+            if (user.Photos.Count == 0)
+            {
+                photo.IsMain = true;
+            }
+
+            //Add Photo to User(Photos[])
+            user.Photos.Add(photo);
+
+            //save changes - true/false (if image is uploaded) 
+            //await _userRepository.SaveAllAsync()
+            //if imageUploaded => map PhotoDto<->PhotoEntity => return photo
+            if (await _userRepository.SaveAllAsync())
+            {
+                //return photo (Mapping PhotoDto <-> Photo) 
+               return _mapper.Map<PhotoDto>(photo);
+            }
+            //else error
+            return BadRequest("Problem Uploading Photo!");
+        }
     }
+   
 }

@@ -18,7 +18,8 @@ namespace API.Entities
         //Is this MainPhoto?
         public bool IsMain { get; set; }
 
-        //PublicId
+
+        //**PublicId - From CLOUDINARY **
         public string PublicId { get; set; }
 
 

@@ -27,13 +27,20 @@ namespace API.Extensions
             //AddScoped - till lifetime of Http Request
             //AddTransient - service created + destroyed as soon as method is finished
             //-------------------------------
+            //----- CLOUDINARY IMAGE UPLOAD -----
+            //config.GetSection('secName') = get section from appSettings.json
+            //services.Configure<Type>(config.GetSection('sectionName'));
+            services.Configure<CloudinarySettings>(Config.GetSection("CloudinarySettings"));
+
             //TokenService
             services.AddScoped<ITokenService, TokenService>();
+
+            //PhotoService
+            services.AddScoped<IPhotoService, PhotoService>();
 
             //----- REPOSITORY SERVICE -----
             //UserRepository
             services.AddScoped<IUserRepository,UserRepository>();
-
 
             //-----[ AUTOMAPPER SERVICE ]-----
             //Maps 1 obj to another (Dto <-> Entities)
