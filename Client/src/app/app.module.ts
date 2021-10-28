@@ -26,6 +26,7 @@ import { MemberEditComponent } from './Components/members/member-edit/member-edi
 //Interceptor (Middleware)
 import { JwtInterceptor } from './Shared/_interceptors/jwt.interceptor';
 import { LoadingInterceptor } from './Shared/_interceptors/loading.interceptor';
+import { PhotoEditorComponent } from './Components/members/photo-editor/photo-editor.component';
 
 
 
@@ -40,7 +41,8 @@ import { LoadingInterceptor } from './Shared/_interceptors/loading.interceptor';
     ListsComponent,
     MessagesComponent,
     MemberCardComponent,
-    MemberEditComponent
+    MemberEditComponent,
+    PhotoEditorComponent
   ],
   imports: [
     BrowserModule,

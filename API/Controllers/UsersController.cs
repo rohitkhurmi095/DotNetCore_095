@@ -200,6 +200,10 @@ namespace API.Controllers
             {
                 //return photo (Mapping PhotoDto <-> Photo) 
                 //return _mapper.Map<PhotoDto>(photo);
+
+                //CreatedAtRoute() 
+                //SETs StatusCode: 201 created
+                //Location:'/api/Users/username' in Header
                 return CreatedAtRoute("GetUser",new {username = user.UserName}, _mapper.Map<PhotoDto>(photo));
             }
             //else error
