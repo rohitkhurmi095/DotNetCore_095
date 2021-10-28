@@ -257,6 +257,60 @@ namespace API.Controllers
             //error
             return BadRequest("Failed to set main Photo");
         }
+
+
+
+
+        //===============
+        //SET Main Photo
+        //===============
+        //Set Photo as mainPhoto from Photos[]
+        [HttpDelete("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId)
+        {
+            //when user login 
+            //GET username from authenticated user token(claims)
+            //------------
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            //Get User by username
+            //--------
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+
+            //GET PHOTO by Id
+            //----------------
+            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+
+            //if photo is notFound!
+            if(photo == null){return NotFound();}
+
+            //If photo is mainPhoto => cannot delete mainPhoto
+            if (photo.IsMain){return BadRequest("You cannot delete your main photo!");}
+
+            //DELETE Photo from Cloudinary
+            //****************************
+            //Delete photo from cloudinary via 'publicId'
+            if(photo.PublicId != null)
+            {
+                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+
+                //if success => delete photo from user Photo[]
+                //if error => show error message
+                if (result.Error != null) { return BadRequest(result.Error.Message); }
+            }
+
+            //Delete Photo from user PhotoCollection[]
+            //*****************************************
+            user.Photos.Remove(photo);
+
+            //SaveChanges
+            //------------
+            //success
+            if(await _userRepository.SaveAllAsync()) { return Ok(); }
+            //error
+            return BadRequest("Failed to delte photo!");
+
+        }
     }
 
 }

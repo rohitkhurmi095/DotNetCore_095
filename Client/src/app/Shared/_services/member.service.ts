@@ -102,9 +102,20 @@ export class MemberService {
   //==============
   //SET MainPhoto
   //==============
+  //SET-Main-Photo API Call
   //Put req => need to send something in body
   //if noting is there to send => send {} blank object
   setMainPhoto(photoId:number){
     return this.http.put(Global.BASE_API_PATH + "users/set-main-photo/"+photoId, {});
   }
+
+
+  //==============
+  //DELETE Photo
+  //==============
+  //DELETE-Photo API Call
+  deletePhoto(photoId:number){
+    return this.http.delete(Global.BASE_API_PATH + "users/delete-photo/"+photoId);
+  }
+
 }
