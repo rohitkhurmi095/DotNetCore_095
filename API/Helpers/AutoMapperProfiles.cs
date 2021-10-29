@@ -37,9 +37,14 @@ namespace API.Helpers
             CreateMap<Photo, PhotoDto>();
 
 
+            //For ProfileUpdate
             //MemberUpdateDto <-> UserEntity
             //-------------------------------
             CreateMap<MemberUpdateDto, User>();
+
+            //ForRegistration
+            //RegisterDto <-> UserEntity
+            CreateMap<RegisterDto, User>();
         }
 
     }

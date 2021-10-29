@@ -16,5 +16,8 @@ namespace API.DTOs
 
         //PhotoUrl(Main Photo)
         public string PhotoUrl { get; set; }
+
+        //KnownAs
+        public string KnownAs { get; set; }
     }
 }

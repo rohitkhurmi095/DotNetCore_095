@@ -28,7 +28,7 @@
         <!-- SHOW only if user is LoggedIn-->
         <div class="dropdown mr-40" *ngIf="(currentUser|async) as user" style="float:right;">
           <a class="dropdown-toggle text-light" style="text-decoration: none!important;" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img src="{{user.photoUrl}}" alt="{{user.userName}}">  Welcome {{user.userName | titlecase}}
+            <img src="{{user.photoUrl  || './assets/images/user.png'}}" alt="{{user.userName}}">  Welcome {{user.userName | titlecase}}
           </a>
 
           <div class="dropdown-menu  mt-3" aria-labelledby="dropdownMenuLink">

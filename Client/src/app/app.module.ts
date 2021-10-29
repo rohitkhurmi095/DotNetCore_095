@@ -4,13 +4,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 //Modules
 import { AppRoutingModule } from './app-routing.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {ToastrModule} from 'ngx-toastr';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FileUploadModule } from 'ng2-file-upload';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 //Components
 import { AppComponent } from './app.component';
@@ -23,11 +24,11 @@ import { MemberListComponent } from './Components/members/member-list/member-lis
 import { MemberCardComponent } from './Components/members/member-card/member-card.component';
 import { MemberDetailsComponent } from './Components/members/member-details/member-details.component';
 import { MemberEditComponent } from './Components/members/member-edit/member-edit.component';
+import { PhotoEditorComponent } from './Components/members/photo-editor/photo-editor.component';
 
 //Interceptor (Middleware)
 import { JwtInterceptor } from './Shared/_interceptors/jwt.interceptor';
 import { LoadingInterceptor } from './Shared/_interceptors/loading.interceptor';
-import { PhotoEditorComponent } from './Components/members/photo-editor/photo-editor.component';
 
 
 
@@ -51,6 +52,7 @@ import { PhotoEditorComponent } from './Components/members/photo-editor/photo-ed
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     //ToastrModule
     ToastrModule.forRoot({
@@ -63,7 +65,9 @@ import { PhotoEditorComponent } from './Components/members/photo-editor/photo-ed
     //NgxSpinnerModule
     NgxSpinnerModule,
     //FileUploadModule
-    FileUploadModule
+    FileUploadModule,
+    //NgxBootstrap DatePicker
+    BsDatepickerModule.forRoot()
   ],
 
   //Provide interceptors used here

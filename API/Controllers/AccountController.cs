@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using API.Interfaces;
+using AutoMapper;
 
 namespace API.Controllers
 {
@@ -24,10 +25,12 @@ namespace API.Controllers
         //--------------------------------------
         private readonly DataContext _context;  //DbContext
         private readonly ITokenService _tokenService;  //TokenService
-        public AccountController(DataContext context,ITokenService tokenService)
+        private readonly IMapper _mapper; //AutoMapper Interface
+        public AccountController(DataContext context,ITokenService tokenService,IMapper mapper)
         {
             _context = context;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
 
         //---------------
@@ -55,6 +58,12 @@ namespace API.Controllers
             }
 
 
+            //Map RegisterDto,UserEntity
+            //---------------------------
+            //_mapper.Map<GoInto>(from)
+            //Mapping fields from registerDto <-> UserEntity
+            var user = _mapper.Map<User>(registerDto);
+
             //If UserName don't exists => CREATE User
             //-------------------------
             //Password Hasing Process
@@ -62,14 +71,21 @@ namespace API.Controllers
             //Password Hash Algo (Created new Random Computed Hash)
             using var hmac = new HMACSHA512();
 
-            var user = new User
+            //**PREVIOUS (without adding/mapping new fields)
+            /*var user = new User
             {
                 //UserName(stored in lowerCase in Db)
                 UserName = registerDto.UserName.ToLower(),
                 //Password (hashed Password(byte[]) + generate PasswordSalt(Key))
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt = hmac.Key
-            };
+            };*/
+
+            //UserName(stored in lowerCase in Db)
+            user.UserName = registerDto.UserName.ToLower();
+            //Password (hashed Password(byte[]) + generate PasswordSalt(Key))
+            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
+            user.PasswordSalt = hmac.Key;
 
             //Add User to Db + SaveChanges()
             _context.Users.Add(user);
@@ -79,7 +95,12 @@ namespace API.Controllers
             return new UserDto
             {
                 UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+
+                //mainPhoto Url
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+                //KnownAs
+                KnownAs = user.KnownAs
             };
         }
 
@@ -138,7 +159,9 @@ namespace API.Controllers
                 Token = _tokenService.CreateToken(user),
 
                 //mainPhoto Url
-                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+                //knownAs
+                KnownAs = user.KnownAs
             };
         }
     }

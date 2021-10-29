@@ -262,7 +262,7 @@ namespace API.Controllers
 
 
         //===============
-        //SET Main Photo
+        // DELETE  Photo
         //===============
         //Set Photo as mainPhoto from Photos[]
         [HttpDelete("delete-photo/{photoId}")]
