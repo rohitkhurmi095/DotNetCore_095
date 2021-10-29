@@ -46,11 +46,11 @@
         <!--============-->
         <!-- Template Form -->
         <!-- SHOW only when user is not LoggedIn -->
-        <form class="form-inline my-2 my-lg-0" #form="ngForm" (ngSubmit)="login()" autocomplete="false" *ngIf="(currentUser|async)===null">
+        <form class="form-inline my-2 my-lg-0" [formGroup]="loginForm" (ngSubmit)="login()" autocomplete="false" *ngIf="(currentUser|async)===null">
           <!-- Username -->
-          <input class="form-control mr-sm-2" type="text" placeholder="Username" name="username" [(ngModel)]="model.username">
+          <input class="form-control mr-sm-2" type="text" placeholder="Username" name="username" formControlName="username">
           <!-- Password -->
-          <input class="form-control mr-sm-2" type="password" placeholder="Password" name="password" [(ngModel)]="model.password">
+          <input class="form-control mr-sm-2" type="password" placeholder="Password" name="password" formControlName="password">
           
           <!-- Login Button-->
           <button class="btn btn-success my-2 my-sm-0" type="submit">Login</button>

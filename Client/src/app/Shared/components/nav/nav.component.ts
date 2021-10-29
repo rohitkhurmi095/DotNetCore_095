@@ -4,6 +4,7 @@ import { AccountService } from '../../_services/account.service';
 import {Router} from '@angular/router';
 import {User} from '../../_models/user';
 import { ToastrService } from 'ngx-toastr';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -13,18 +14,14 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class NavComponent implements OnInit {
 
-  //Model
-  model:any = {
-    username:"",
-    password:""
-  };
+  //loginForm instance
+  loginForm:FormGroup;
 
   //CurrentUser
   currentUser:Observable<User>;
   
-  //AccountService,Router,ToastrNotification
-  constructor(private accountService:AccountService,private router:Router,private toastr:ToastrService) { }
-
+  //AccountService,Router,ToastrNotification,FormBuilder
+  constructor(private accountService:AccountService,private router:Router,private toastr:ToastrService,private _fb:FormBuilder) { }
 
   ngOnInit(): void {
     //________________
@@ -33,6 +30,8 @@ export class NavComponent implements OnInit {
     //currentUser -> holds user obj
     this.currentUser = this.accountService.CurrentUser;
 
+    //Form
+    this.setFormState();
   }
 
 
@@ -41,7 +40,7 @@ export class NavComponent implements OnInit {
   //=======
   //pass model(formData) -> login
   login(){
-    this.accountService.login(this.model).subscribe(res=>{
+    this.accountService.login(this.loginForm.value).subscribe(res=>{
       //res = loggedInData
       //console.log("LoggedIn Successfully!");
 
@@ -50,6 +49,9 @@ export class NavComponent implements OnInit {
 
       //After Login -> navigate to membersComponent
       this.router.navigateByUrl('/members');
+
+      //RESET FORM STATE
+      this.loginForm.reset();
     },error=>{
       console.log(error);
 
@@ -74,4 +76,13 @@ export class NavComponent implements OnInit {
   }
 
  
+  //===========
+  //FormData
+  //===========
+  setFormState(){
+    this.loginForm = this._fb.group({
+      username:['',Validators.required],
+      password:['',Validators.required]
+    });
+  }
 }

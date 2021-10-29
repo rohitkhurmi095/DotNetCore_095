@@ -24,12 +24,6 @@ export class ResisterComponent implements OnInit {
     dateInputFormat:'DD MMM YYYY'
   }
   
-  //Model
-  /*model:any = {
-    username:"",
-    password:""
-  };*/
-
 
   //OUTPUT Data to HomeComponent(Child->Parent)
   //sending CancelNotification -> to set registerMode=false
@@ -52,7 +46,7 @@ export class ResisterComponent implements OnInit {
   register(){
    this.accountService.register(this.registerForm.value).subscribe(res =>{
     //res - register form data 
-    console.log(JSON.stringify(this.registerForm.value));
+    //console.log(JSON.stringify(this.registerForm.value));
 
     //Toastr Notification
     this.toastr.success("Registerd Successfully!");
@@ -62,7 +56,7 @@ export class ResisterComponent implements OnInit {
 
     //RESET FORM STATE
     this.registerForm.reset();
-    
+
     //this.cancel();
    },error=>{
      //console.log(error);
