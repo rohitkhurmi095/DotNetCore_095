@@ -3,9 +3,10 @@ import { Component, Input, OnInit, Output,EventEmitter} from '@angular/core';
 import { Global } from 'src/app/Shared/global';
 import { AccountService } from 'src/app/Shared/_services/account.service';
 import { ToastrService } from 'ngx-toastr';
-import { FormBuilder, FormGroup,Validators } from '@angular/forms';
+import { FormBuilder, FormGroup,NgForm,Validators } from '@angular/forms';
 import { MustMatchValidator } from 'src/app/Shared/validation.validators';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-resister',
@@ -37,40 +38,39 @@ export class ResisterComponent implements OnInit {
   
   //AccountService(Dependency Injection),ToastrService
   //FormBuilder obj
-  constructor(private accountService:AccountService,private toastr:ToastrService,private _fb:FormBuilder) { }
+  constructor(private accountService:AccountService,private toastr:ToastrService,private _fb:FormBuilder,private router:Router) { }
 
   ngOnInit(): void {
     //form
-    this.formData();
+    this.setformState();
   }
 
   //=========
   //Register
   //=========
+  //pass formData -> registerForm.value
   register(){
-    console.log("VALUES: "+JSON.stringify(this.registerForm.value));
-  }
-  
-  
-  
-  
-  /*register(){
-   this.accountService.register(this.model).subscribe(res =>{
+   this.accountService.register(this.registerForm.value).subscribe(res =>{
     //res - register form data 
-    //console.log(res);
+    console.log(JSON.stringify(this.registerForm.value));
 
     //Toastr Notification
     this.toastr.success("Registerd Successfully!");
+    
+    //Move to MembersPage after Registration
+    this.router.navigateByUrl('/members');
 
-    //Move to HomePage after Registration
-    this.cancel();
+    //RESET FORM STATE
+    this.registerForm.reset();
+    
+    //this.cancel();
    },error=>{
      //console.log(error);
 
      //Toastr Notification
      this.toastr.error(error.error);
    })
-  }*/
+  }
 
 
   //________
@@ -86,7 +86,7 @@ export class ResisterComponent implements OnInit {
   //======
   //FORM 
   //======
-  formData(){
+  setformState(){
     this.registerForm = this._fb.group({
       //username
       username:['', Validators.compose([Validators.required])],

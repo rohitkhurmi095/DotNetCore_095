@@ -97,8 +97,6 @@ namespace API.Controllers
                 UserName = user.UserName,
                 Token = _tokenService.CreateToken(user),
 
-                //mainPhoto Url
-                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
                 //KnownAs
                 KnownAs = user.KnownAs
             };

@@ -139,6 +139,18 @@ export class PhotoEditorComponent implements OnInit {
 
         //Add photo to member{Photos[]}
         this.member.photos.push(photo);
+
+        //If photo = mainPhoto
+        //---------------------
+        if(photo.isMain){
+          //UPDATE User(CurrentUser)
+          this.user.photoUrl = photo.url;
+          //update CurrentUserData
+          this.accountService.setCurrentUser(this.user);
+
+          //UPDATE MemberData
+          this.member.photoUrl = photo.url;
+        }
       }
     }
   }
