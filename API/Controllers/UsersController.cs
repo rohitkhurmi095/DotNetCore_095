@@ -2,6 +2,8 @@
 using API.Data.Repositories;
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -93,13 +95,27 @@ namespace API.Controllers
         //ProjectTo<Dto>(_mapper.ConfigurationProvider)
         //ConfigurationProvider = AutoMapperProfile configurations (Helpers Folder)
 
+
+
         //==========
         //Get Users
         //==========
+        //pass UserParams as QueryParams to controller => using [fromQuery]
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetMembers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetMembers([FromQuery] UserParams userParams)
         {
-            var users = await _userRepository.GetMembersAsync();
+            //QueryParams passed to UserRepository
+            //-------------------------------------
+            //RETURNS PagedList of users -> access (PageSize,TotalPages,TotalCount,CurrentPage) + set in PaginationHeader
+            var users = await _userRepository.GetMembersAsync(userParams);
+
+            //Add PaginationHeader to response
+            //----------------------------------
+            //using PaginationHeader Class Constructor - AddPaginationHeader(totalItems,totalCount,currentPage,itemsPerPage)
+            //values passes to constructor are assessed using users
+            Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
+
             return Ok(users);
         }
 

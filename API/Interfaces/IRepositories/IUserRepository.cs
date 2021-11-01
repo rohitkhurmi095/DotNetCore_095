@@ -1,5 +1,6 @@
 ﻿using API.DTOs;
 using API.Entities;
+using API.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +31,12 @@ namespace API.Interfaces
         //**************************************
         //FOR AutoMapper extensions - MemberDto
         //**************************************
+        //***** Pagination *****
+        //Type = PagedList
+        //QueryParams = UserParams
+
         //Get users
-        Task<IEnumerable<MemberDto>> GetMembersAsync();
+        Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams);
 
         //Get user by name
         Task<MemberDto> GetMemberAsync(string username);

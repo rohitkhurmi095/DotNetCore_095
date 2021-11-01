@@ -1,5 +1,6 @@
 ﻿using API.DTOs;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -95,16 +96,37 @@ namespace API.Data.Repositories
         //ProjectTo = return the property we want directly from the database
         //ProjectTo<Dto>(_mapper.ConfigurationProvider)
         //ConfigurationProvider = AutoMapperProfile configurations (Helpers Folder)
+        //TurnOff Tracking in EntityFramework - .AsNoTracking();
 
+        //***** PAGING *****
+        //Type = PagedList<T> T=MemberDto
+        //QueryParams = UserParams
+        //RETURN PAGEDLIST (already done ToListAsync())
+
+        //==========
         //GET USERS
-        public async Task<IEnumerable<MemberDto>> GetMembersAsync()
+        //==========
+        public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
         {
-            return await _context.Users.
+
+            //IQuerable query
+            //----------------
+            var query = _context.Users.
                         ProjectTo<MemberDto>(_mapper.ConfigurationProvider).
-                        ToListAsync();
+                        AsNoTracking();
+
+            //ReturnPagedList
+            //----------------
+            //call method to return PagedList from PagedList Helper class 
+            //CreateAsync(IQuerable<T>store,int pageNumber,int pageSize)
+            //pageNumber,pageSize = queryParams (from UserParams Helper Class)
+            return await PagedList<MemberDto>.CreateAsync(query,userParams.PageNumber,userParams.PageSize);
         }
 
+
+        //=================
         //GET USER by name
+        //=================
         public async Task<MemberDto> GetMemberAsync(string username)
         {
             return await _context.Users.Where(x=>x.UserName == username)
