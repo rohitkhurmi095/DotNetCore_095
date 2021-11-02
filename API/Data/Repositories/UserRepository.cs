@@ -111,16 +111,31 @@ namespace API.Data.Repositories
 
             //IQuerable query
             //----------------
-            var query = _context.Users.
-                        ProjectTo<MemberDto>(_mapper.ConfigurationProvider).
-                        AsNoTracking();
+            var query = _context.Users.AsQueryable();
+
+            //FILTERS
+            //********
+            //1.[userName] - GET ALL USERS Except Currently LoggedInUser
+            query = query.Where(u => u.UserName != userParams.CurrentUsername);
+            
+            //2.[Gender] - GET GENDER of User
+            query = query.Where(u => u.Gender == userParams.Gender);
+
+            //3.[Age]
+            //DateTime.Today = 2021 - 60 = 1961
+            //MinAge (-1 = a day less than today (today not completed))
+            var minDob = DateTime.Today.AddYears(-userParams.maxAge - 1);
+            //MaxAge (2021 - 18 = 2003)
+            var maxDob = DateTime.Today.AddYears(-userParams.minAge);
+            query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth<=maxDob);
+
 
             //ReturnPagedList
             //----------------
             //call method to return PagedList from PagedList Helper class 
             //CreateAsync(IQuerable<T>store,int pageNumber,int pageSize)
             //pageNumber,pageSize = queryParams (from UserParams Helper Class)
-            return await PagedList<MemberDto>.CreateAsync(query,userParams.PageNumber,userParams.PageSize);
+            return await PagedList<MemberDto>.CreateAsync(query.ProjectTo<MemberDto>(_mapper.ConfigurationProvider).AsNoTracking(), userParams.PageNumber,userParams.PageSize);
         }
 
 

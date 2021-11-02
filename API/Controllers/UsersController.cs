@@ -105,6 +105,34 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetMembers([FromQuery] UserParams userParams)
         {
+
+            //___________
+            //FILTRATION
+            //===========
+            //1.Populate CurrentUsername -> userParams
+            //*****************************************
+            //when user login 
+            //GET username from authenticated user token(claims)
+            //------------
+            //ClaimTypes = info about identity
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            //Get User by username
+            //--------
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+
+            //Populate username -> userParams
+            userParams.CurrentUsername = user.UserName;
+
+
+            //2.Get opposite Gender of the CurrentUser Gender (to search)
+            //***********************************************
+            if (string.IsNullOrEmpty(userParams.Gender))
+            {
+                userParams.Gender = user.Gender == "male" ? "female" : "male";
+            }
+
+           
             //QueryParams passed to UserRepository
             //-------------------------------------
             //RETURNS PagedList of users -> access (PageSize,TotalPages,TotalCount,CurrentPage) + set in PaginationHeader

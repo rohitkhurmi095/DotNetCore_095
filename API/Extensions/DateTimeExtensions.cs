@@ -8,6 +8,7 @@ namespace API.Extensions
     public static class DateTimeExtensions
     {
         //this DateTime => use this method directly with DateTime type
+        //(DateTime.Today property returns the current date with the time compnents set to zero)
         //Eg: use as Dob.calculateAge()
         public static int calculateAge(this DateTime Dob)
         {

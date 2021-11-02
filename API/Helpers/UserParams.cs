@@ -12,12 +12,12 @@ namespace API.Helpers
        Add query Params
        GET: /api/users?pageSize=5&pageNumber=1 */
 
-
-    //Define Paging Settings
-    //=======================
     //Passed as *****[ QueryParams ]***** to HttpRoute(Controller)
     public class UserParams
     {
+
+        //Define PAGINATION Settings
+        //---------------------------
         //MaxPageSize
         private const int MaxPageSize = 50;
 
@@ -27,6 +27,23 @@ namespace API.Helpers
 
         //DefaultPageNumber = 1
         public int PageNumber { get; set; } = 1;
+
+
+        //CurrentUser
+        //-----------
+        //currentUsername
+        public string CurrentUsername { get; set; }
+
+        //Gender
+        //--------
+        //Opposite Gender of currentUser to be searched
+        public string Gender { get; set; }
+
+        //---- Age ---------
+        //MinAge
+        public int minAge { get; set; } = 18;
+        //MaxAge
+        public int maxAge { get; set; } = 90;
 
     }
 }
