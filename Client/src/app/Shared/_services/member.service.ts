@@ -6,6 +6,7 @@ import { Global } from '../global';
 import { Observable, of } from 'rxjs';
 import {map} from 'rxjs/operators';
 import {PaginatedResult} from '../_models/pagination';
+import { UserParams } from '../_models/userParams';
 
 //===========
 //Http Header
@@ -34,55 +35,79 @@ export class MemberService {
   members:Member[];
 
   //PaginationResult(response,pagination) - stores our resultSet
-  paginationResult:PaginatedResult<Member[]> = new PaginatedResult<Member[]>();
+  //paginationResult:PaginatedResult<Member[]> = new PaginatedResult<Member[]>();
 
 
   //HttpClient - for requests
   constructor(private http:HttpClient) { }
 
-  
-  //___________
-  //Get Users
-  //===========
-  //Type: Member[]
-  //of(data) - converts data to observable type
-
-  //**Pagination**
-  //pass queryParams for Pagination - page(pageNumber),itemsPerPage(pageSize)
-  getMembers(page?:number,itemsPerPage?:number){
-  
-    //---- PAGINATION ----
-    //check if params are passed in method?
+   //----------------------
+  //1.Get PaginationHeaders
+  //======================
+  private getPaginationHeaders(pageNumber:number,pageSize:number){
+      //---- PAGINATION ----
+     //check if params are passed in method?
     //Params(query)
     let params = new HttpParams();
 
     //Add PageNumber,itemsPerPage to queryParams
-    if(page!==null && itemsPerPage!==null){
-      params = params.append('pageNumber',page.toString());
-      params = params.append('pageSize',itemsPerPage.toString());
+    if(pageNumber!==null && pageSize!==null){
+      params = params.append('pageNumber',pageNumber.toString());
+      params = params.append('pageSize',pageSize.toString());
     }
-
-    //call API + return members(res)
-    //Gives full response back
-    return this.http.get<Member[]>(Global.BASE_API_PATH + 'users',{observe:'response',params}).pipe(
-      map(res=>{
-        //Members[]
-        //---------
-        this.paginationResult.result = res.body;
-        
-        //Pagination
-        //-----------
-        //Get Pagination Headers (API Response)
-        if(res.headers.get('Pagination')!==null){
-          this.paginationResult.pagination = JSON.parse(res.headers.get('Pagination'));
-        }
-        
-        //return response
-        return this.paginationResult;
-      })
-    );
+    return params;
   }
 
+
+  //---------------------
+  //2.Get PaginatedResult
+  //=====================
+  private getPaginatedResult<T>(url:any,params:any){
+    //PaginationResult(response,pagination) - stores our resultSet
+    const paginationResult:PaginatedResult<T> = new PaginatedResult<T>();
+
+    return this.http.get<T>(url, {observe:'response',params}).pipe(
+      map(res=>{
+         //Get Pagination Headers (API Response)
+         if(res.headers.get('Pagination')!==null){
+          paginationResult.pagination = JSON.parse(res.headers.get('Pagination'));
+        }
+
+        //pagination result
+        return paginationResult;
+      })
+    )
+  }
+
+
+  //==========
+  //Get Users
+  //===========
+  //methods {1+2}
+  //Type: Member[]
+  //pass UserParams instance(Class - contains queryParams as properties) - as queryParams
+  getMembers(userParams:UserParams){
+
+    //Params
+    //*******
+    //Pagination Params
+    //------------------
+    //pass queryParams for Pagination - page(pageNumber),itemsPerPage(pageSize)
+    let params = this.getPaginationHeaders(userParams.pageNumber,userParams.pageSize);
+    //Age Params
+    //-----------
+    params = params.append('minAge',userParams.minAge.toString());
+    params = params.append('maxAge',userParams.maxAge.toString());
+    //Gender Params
+    //--------------
+    params = params.append('gender',userParams.gender.toString());
+
+    
+    //call API + return members(res)
+    //******************************
+    //Gives full response back
+    return this.getPaginatedResult<Member[]>(Global.BASE_API_PATH +"users",params);
+  }
 
 
 

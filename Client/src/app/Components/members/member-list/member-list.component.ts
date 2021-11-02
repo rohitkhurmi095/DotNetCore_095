@@ -3,6 +3,9 @@ import { Member } from 'src/app/Shared/_models/member';
 import { MemberService } from 'src/app/Shared/_services/member.service';
 import { Observable } from 'rxjs';
 import { Pagination } from 'src/app/Shared/_models/pagination';
+import { AccountService } from 'src/app/Shared/_services/account.service';
+import { User } from 'src/app/Shared/_models/user';
+import { UserParams } from 'src/app/Shared/_models/userParams';
 
 @Component({
   selector: 'app-member-list',
@@ -17,12 +20,32 @@ export class MemberListComponent implements OnInit {
   //**PAGINATION**
   //--------------
   pagination:Pagination;
-  //Default(passed as queryParamas)
-  pageNumber = 1;
-  pageSize = 5;
+
+  //Default QueryParams(passed as queryParamas)
+  UserParams:UserParams;
+
+  //CurrentUser
+  user:User;
 
   //Service Object - DependencyInjection
-  constructor(private memberService:MemberService) {}
+  //Member,AccountService
+  constructor(private memberService:MemberService,private accountService:AccountService) {
+    
+    //---------------------------------------------
+    //Get CurrentUser + Pass gender to UserParams
+    //---------------------------------------------
+    //CurrentUser -> to set gender in userParams
+    this.accountService.CurrentUser.subscribe(res=>{
+      //CurrentUser
+      this.user = res;
+
+      //Pass user to UserParams class -> to get gender of user
+      this.UserParams = new UserParams(this.user);
+
+    });
+  
+  
+  }
 
   //Load -> when view is fully initialized
   ngOnInit(): void {
@@ -33,9 +56,9 @@ export class MemberListComponent implements OnInit {
   //GET Members
   //============
   loadMembers(){
-    //passQuery params for Pagination
+    //pass QueryParams - UserParams
     //returns paginatedResult
-    this.memberService.getMembers(this.pageNumber,this.pageSize).subscribe(res=>{
+    this.memberService.getMembers(this.UserParams).subscribe(res=>{
 
       //Get Users(Members)
       //==========-----------
@@ -53,7 +76,7 @@ export class MemberListComponent implements OnInit {
   //-----------------------
   pageChanged(event:any){
     //NextPage
-    this.pageNumber = event.page;
+    this.UserParams.pageNumber = event.page;
 
     //GetMembers - for nextPage
     this.loadMembers();

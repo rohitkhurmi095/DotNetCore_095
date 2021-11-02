@@ -19,5 +19,8 @@ namespace API.DTOs
 
         //KnownAs
         public string KnownAs { get; set; }
+
+        //Gender
+        public string Gender { get; set; }
     }
 }
