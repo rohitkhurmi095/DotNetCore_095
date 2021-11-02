@@ -28,6 +28,5 @@ namespace API.Helpers
         //DefaultPageNumber = 1
         public int PageNumber { get; set; } = 1;
 
-        
     }
 }

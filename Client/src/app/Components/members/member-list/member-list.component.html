@@ -5,9 +5,24 @@
 <!-- Display memberCard as listItem -->
 
 <div class="row">
-    <div *ngFor="let member of members |async" class="col-2">
+    <div *ngFor="let member of members" class="col-2">
         <!-- Pass member data to MemberCard Component-->
         <app-member-card [member]="member"></app-member-card>
     </div>
 </div>
 
+<!-- PAGINATION -->
+<!---------------->
+<div class="d-flex justify-content-center">
+    <!--ngxBootsrap Pagination-->
+    <pagination [boundaryLinks]="true" 
+                [totalItems]="pagination.totalItems"
+                [itemsPerPage]="pagination.itemsPerPage"
+                [(ngModel)]="pagination.currentPage" 
+                (pageChanged) = "pageChanged($event)"
+                previousText="&lsaquo;" 
+                nextText="&rsaquo;" 
+                firstText="&laquo;" 
+                lastText="&raquo;">
+    </pagination>
+</div>

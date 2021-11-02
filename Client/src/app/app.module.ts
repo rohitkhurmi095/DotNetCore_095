@@ -12,6 +12,7 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FileUploadModule } from 'ng2-file-upload';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 //Components
 import { AppComponent } from './app.component';
@@ -67,7 +68,9 @@ import { LoadingInterceptor } from './Shared/_interceptors/loading.interceptor';
     //FileUploadModule
     FileUploadModule,
     //NgxBootstrap DatePicker
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    //NgxBootstrap Pagination
+    PaginationModule.forRoot()
   ],
 
   //Provide interceptors used here

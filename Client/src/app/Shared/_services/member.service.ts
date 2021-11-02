@@ -1,10 +1,11 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Member} from '../_models/member';
 import { Global } from '../global';
 import { Observable, of } from 'rxjs';
 import {map} from 'rxjs/operators';
+import {PaginatedResult} from '../_models/pagination';
 
 //===========
 //Http Header
@@ -32,6 +33,10 @@ export class MemberService {
   //Members[]
   members:Member[];
 
+  //PaginationResult(response,pagination) - stores our resultSet
+  paginationResult:PaginatedResult<Member[]> = new PaginatedResult<Member[]>();
+
+
   //HttpClient - for requests
   constructor(private http:HttpClient) { }
 
@@ -41,19 +46,39 @@ export class MemberService {
   //===========
   //Type: Member[]
   //of(data) - converts data to observable type
-  getMembers():Observable<Member[]>{
-    
-    //if there is members in members[] => return members
-    if(this.members?.length>0){
-      return of(this.members);
+
+  //**Pagination**
+  //pass queryParams for Pagination - page(pageNumber),itemsPerPage(pageSize)
+  getMembers(page?:number,itemsPerPage?:number){
+  
+    //---- PAGINATION ----
+    //check if params are passed in method?
+    //Params(query)
+    let params = new HttpParams();
+
+    //Add PageNumber,itemsPerPage to queryParams
+    if(page!==null && itemsPerPage!==null){
+      params = params.append('pageNumber',page.toString());
+      params = params.append('pageSize',itemsPerPage.toString());
     }
 
-    //else call API + return members(res)
-    return this.http.get<Member[]>(Global.BASE_API_PATH + 'users/').pipe(
+    //call API + return members(res)
+    //Gives full response back
+    return this.http.get<Member[]>(Global.BASE_API_PATH + 'users',{observe:'response',params}).pipe(
       map(res=>{
-        this.members = res;
-        //members 
-        return res;
+        //Members[]
+        //---------
+        this.paginationResult.result = res.body;
+        
+        //Pagination
+        //-----------
+        //Get Pagination Headers (API Response)
+        if(res.headers.get('Pagination')!==null){
+          this.paginationResult.pagination = JSON.parse(res.headers.get('Pagination'));
+        }
+        
+        //return response
+        return this.paginationResult;
       })
     );
   }

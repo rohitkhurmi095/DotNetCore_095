@@ -28,7 +28,7 @@ namespace API.Extensions
 
             //Add PaginationHeader -> response
             //----------------------------------
-            response.Headers.Add("Pagination", JsonSerializer.Serialize(parginationHeader));
+            response.Headers.Add("Pagination", JsonSerializer.Serialize(parginationHeader, options));
 
             //Allow CORS ACCESS
             //------------------
