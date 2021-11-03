@@ -7,6 +7,9 @@ import { Observable, of } from 'rxjs';
 import {map} from 'rxjs/operators';
 import {PaginatedResult} from '../_models/pagination';
 import { UserParams } from '../_models/userParams';
+import { User } from '../_models/user';
+import { AccountService } from './account.service';
+
 
 //===========
 //Http Header
@@ -34,80 +37,122 @@ export class MemberService {
   //Members[]
   members:Member[];
 
-  //PaginationResult(response,pagination) - stores our resultSet
-  //paginationResult:PaginatedResult<Member[]> = new PaginatedResult<Member[]>();
+  //CurrentUser
+  user:User;
 
+  //UserParams (queryParams)
+  userParams:UserParams;
 
   //HttpClient - for requests
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient,private accountService:AccountService) {
 
-   //----------------------
-  //1.Get PaginationHeaders
-  //======================
-  private getPaginationHeaders(pageNumber:number,pageSize:number){
-      //---- PAGINATION ----
-     //check if params are passed in method?
-    //Params(query)
-    let params = new HttpParams();
+    //GET loggedIn CurrentUser from accountsService 
+    //pass userDetails in userParams to get currentUser Gender  
+    //----------------------------------------------------------
+    //CurrentUser -> to set gender in userParams
+    this.accountService.CurrentUser.subscribe(res=>{
+      this.user = res;
 
-    //Add PageNumber,itemsPerPage to queryParams
-    if(pageNumber!==null && pageSize!==null){
-      params = params.append('pageNumber',pageNumber.toString());
-      params = params.append('pageSize',pageSize.toString());
-    }
-    return params;
+      //Pass user to UserParams class -> to get gender of user
+      this.userParams = new UserParams(res);
+    });
   }
 
 
-  //---------------------
-  //2.Get PaginatedResult
-  //=====================
-  private getPaginatedResult<T>(url:any,params:any){
-    //PaginationResult(response,pagination) - stores our resultSet
-    const paginationResult:PaginatedResult<T> = new PaginatedResult<T>();
+  //Get UserParams (to use in member-list Component)
+  //==============
+  //return userParams
+  getUserParams()
+  {
+    return this.userParams;
+  }
 
-    return this.http.get<T>(url, {observe:'response',params}).pipe(
+  //Set UserParams (update queryParams from member-list component)
+  //==============
+  //set userParams
+  setUserParams(params:UserParams){
+    this.userParams = params;
+  }
+
+  //RESET UserParams
+  //=================
+  //Reset = create new instance of UserParams class + pass Current User
+  resetUserParams(){
+    this.userParams = new UserParams(this.user);
+    return this.userParams;
+  }
+
+
+  //_______________________
+  //1.GET PaginatedHeaders
+  //_______________________
+  //returns params
+  private getPaginatedHeader(pageNumber:number,pageSize:number){
+     //check if params(queryString) are passed in method?
+     let params = new HttpParams();
+
+     //Pagination Params
+     if(pageSize!==null && pageNumber!==null){
+       params = params.append('pageNumber',pageNumber.toString());
+       params = params.append('pageSize',pageSize.toString());  
+     }
+    
+     //return params
+     return params;
+  }
+
+  //_____________________
+  //2.GET PaginatedResult
+  //_____________________
+  //returns paginatedResult(result + Pagination)
+  private getPaginatedResult<T>(url:any,params:any){
+
+    //pass UserParams instance(Class - contains queryParams as properties) - as queryParams
+    //PaginatedResult = result<Member[]> + pagination - stores our resultSet
+    const paginatedResult:PaginatedResult<T> = new PaginatedResult<T>();
+
+    //call API + return response
+    return this.http.get<T>(url,{observe:'response',params}).pipe(
       map(res=>{
-         //Get Pagination Headers (API Response)
-         if(res.headers.get('Pagination')!==null){
-          paginationResult.pagination = JSON.parse(res.headers.get('Pagination'));
+        
+        //Response Body(Memebers[])
+        paginatedResult.result = res.body;
+        
+        //Get Pagination Headers (API Response)
+        if(res.headers.get('Pagination')!== null){
+          paginatedResult.pagination = JSON.parse(res.headers.get('Pagination'));
         }
 
-        //pagination result
-        return paginationResult;
+        //return PaginatedResult
+        return paginatedResult;
       })
     )
   }
-
 
   //==========
   //Get Users
   //===========
   //methods {1+2}
   //Type: Member[]
-  //pass UserParams instance(Class - contains queryParams as properties) - as queryParams
   getMembers(userParams:UserParams){
 
-    //Params
-    //*******
-    //Pagination Params
-    //------------------
-    //pass queryParams for Pagination - page(pageNumber),itemsPerPage(pageSize)
-    let params = this.getPaginationHeaders(userParams.pageNumber,userParams.pageSize);
-    //Age Params
-    //-----------
+    //Set Query Params
+    //*****************
+    //Pagination - page(pageNumber),itemsPerPage(pageSize)
+    let params = this.getPaginatedHeader(userParams.pageNumber,userParams.pageSize);
+    //Age
     params = params.append('minAge',userParams.minAge.toString());
     params = params.append('maxAge',userParams.maxAge.toString());
-    //Gender Params
-    //--------------
+    //Gender
     params = params.append('gender',userParams.gender.toString());
-
-    
+  
     //call API + return members(res)
     //******************************
     //Gives full response back
     return this.getPaginatedResult<Member[]>(Global.BASE_API_PATH +"users",params);
   }
+
+
 
 
 
@@ -130,7 +175,7 @@ export class MemberService {
   }
 
 
-
+  
 
   //_____________________________
   //Update LoggedIn User Profile

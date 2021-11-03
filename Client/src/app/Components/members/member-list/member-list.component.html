@@ -1,3 +1,61 @@
+<!------------------>
+<!-- Your Matches -->
+<!--==============-->
+<div class="text-center mt-3">
+    <h2>Your matches - {{pagination?.totalItems}} found</h2>
+</div>
+
+
+<!--==============-->
+<!-- FILTERS FORM -->
+<!--==============-->
+<!-- SET/RESET Filters here -->
+<div class="container mt-3">
+
+    <!-- TemplateForm-->
+    <form #form="ngForm" (ngSubmit)="loadMembers()"  class="form-inline mb-3" autocomplete="off">
+
+        <!-- AGE FILTER-->
+        <!--===========-->
+        <!-- minAge(userParams) -->
+        <div class="form-group">
+            <label>Age from: </label>
+            <input type="number" class="form-control ml-1" style="width: 70px;" name="minAge" [(ngModel)]="userParams.minAge">
+        </div>
+
+        <!-- maxAge(userParams)-->
+        <div class="form-group  px-2">
+            <label>Age to: </label>
+            <input type="number" class="form-control ml-1" style="width: 70px;" name="maxAge" [(ngModel)]="userParams.maxAge">
+        </div>
+
+
+        <!-- Gender Filter -->
+        <!--===============-->
+        <div class="form-group px-2">
+            <label>Show: </label>
+
+            <!-- SELECTOR -->
+            <select class="form-control ml-1" style="width: 130px"  name="gender" [(ngModel)]="userParams.gender"> 
+                <option *ngFor="let gender of genderList" [value]="gender.value">{{gender.display}}</option>
+            </select>
+        </div>
+
+
+        <!--==== Buttons =====-->
+        <!-- Apply Filters -->
+        <!------------------->
+        <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
+       
+        <!-- RESET Filters -->
+        <!-------------------> 
+        <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit" >Reset Filters</button>
+
+    </form>
+</div>
+
+
+
 <!--===========-->
 <!-- All Users -->
 <!--===========-->
@@ -11,13 +69,14 @@
     </div>
 </div>
 
+
 <!-- PAGINATION -->
 <!---------------->
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center" *ngIf="pagination">
     <!--ngxBootsrap Pagination-->
-    <pagination [boundaryLinks]="true" 
-                [totalItems]="pagination.totalItems"
+    <pagination [boundaryLinks]="true"
                 [itemsPerPage]="pagination.itemsPerPage"
+                [totalItems]="pagination.totalItems"
                 [(ngModel)]="pagination.currentPage" 
                 (pageChanged) = "pageChanged($event)"
                 previousText="&lsaquo;" 

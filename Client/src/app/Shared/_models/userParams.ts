@@ -1,6 +1,5 @@
 //Class for userParams 
 //=====================
-
 import { User } from "./user";
 
 //userParams = queryParams => pass as an object in API (better way if more params are there)
@@ -23,7 +22,7 @@ export class UserParams {
     //Create an instance of UserParams class + pass currentUser in it 
     //To Search for users opposite to currentUser gender
     constructor(user:User){
-        this.gender = user.gender === "male"?"female":"male"
+        this.gender = user.gender === 'male' ? 'female' : 'male';
     }
     
 }

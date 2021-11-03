@@ -2,13 +2,13 @@
 //===========
 export interface Pagination {
     //CurrentPage
-    currentPage:number
+    currentPage:number;
     //ItemsperPage
-    itemsPerPage:number
+    itemsPerPage:number;
     //TotalItems (No.of.Items in query)
-    totalItems:number
+    totalItems:number;
     //TotalPages
-    totalPages:number
+    totalPages:number;
 }
 
 
