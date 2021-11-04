@@ -24,6 +24,9 @@ namespace API.Controllers
 
     //Authorize all methods inside this controller
     [Authorize]
+    //LogUserActivity ActionFilter
+    [ServiceFilter(typeof(LogUserActivity))]
+    //Allow CORS Sharing
     [EnableCors()]
     public class UsersController : ControllerBase
     {

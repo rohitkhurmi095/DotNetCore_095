@@ -38,6 +38,9 @@ namespace API.Extensions
             //PhotoService
             services.AddScoped<IPhotoService, PhotoService>();
 
+            //----- LogUserActivity HelperClass -----
+            services.AddScoped<LogUserActivity>();
+
             //----- REPOSITORY SERVICE -----
             //UserRepository
             services.AddScoped<IUserRepository,UserRepository>();

@@ -13,11 +13,15 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using API.Interfaces;
 using AutoMapper;
+using API.Helpers;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
+    //LogUserActivity ActionFilter
+    [ServiceFilter(typeof(LogUserActivity))]
     public class AccountController : ControllerBase
     {
         //--------------------------------------
