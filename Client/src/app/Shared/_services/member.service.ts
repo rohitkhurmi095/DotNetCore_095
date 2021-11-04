@@ -145,6 +145,8 @@ export class MemberService {
     params = params.append('maxAge',userParams.maxAge.toString());
     //Gender
     params = params.append('gender',userParams.gender.toString());
+    //OrderBy
+    params = params.append('orderBy',userParams.orderBy.toString());
   
     //call API + return members(res)
     //******************************

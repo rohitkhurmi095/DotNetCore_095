@@ -118,7 +118,7 @@ namespace API.Data.Repositories
             //1.[userName] - GET ALL USERS Except Currently LoggedInUser
             query = query.Where(u => u.UserName != userParams.CurrentUsername);
             
-            //2.[Gender] - GET GENDER of User
+            //2.[Gender] - GET users by GENDER from QueryParams
             query = query.Where(u => u.Gender == userParams.Gender);
 
             //3.[Age]
@@ -130,6 +130,17 @@ namespace API.Data.Repositories
             query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth<=maxDob);
 
 
+            //4.[OrderBy] - userParams
+            //{lastActive(default),created}
+            query = userParams.OrderBy switch
+            {
+                //CASE - created(new user)
+                "created" => query.OrderByDescending(u=>u.Created),
+               //CASE - DEFAULT - lastActive
+                _ => query.OrderByDescending(u=>u.LastActive)
+            };
+      
+           
             //ReturnPagedList
             //----------------
             //call method to return PagedList from PagedList Helper class 

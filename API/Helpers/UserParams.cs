@@ -45,5 +45,9 @@ namespace API.Helpers
         //MaxAge
         public int maxAge { get; set; } = 90;
 
+        //----- OrderBy -----
+        //{Created,LastActive(Default}
+        //DEFAULT
+        public string OrderBy { get; set; } = "lastActive";
     }
 }

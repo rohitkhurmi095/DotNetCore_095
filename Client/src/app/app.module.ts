@@ -13,6 +13,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { FileUploadModule } from 'ng2-file-upload';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { TimeagoModule } from 'ngx-timeago';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 //Components
 import { AppComponent } from './app.component';
@@ -70,7 +72,12 @@ import { LoadingInterceptor } from './Shared/_interceptors/loading.interceptor';
     //NgxBootstrap DatePicker
     BsDatepickerModule.forRoot(),
     //NgxBootstrap Pagination
-    PaginationModule.forRoot()
+    PaginationModule.forRoot(),
+    //NgxTimeAgo - pipe for last ActiveDate{last time user was Active} 
+    TimeagoModule.forRoot(),
+    //NgxButtons
+    ButtonsModule.forRoot()
+
   ],
 
   //Provide interceptors used here

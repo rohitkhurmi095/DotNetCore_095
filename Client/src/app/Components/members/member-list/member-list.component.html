@@ -51,6 +51,30 @@
         <!-------------------> 
         <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit" >Reset Filters</button>
 
+
+        <!--==============================-->
+        <!-- OrderBy {lastActive|created} -->
+        <!--==============================-->
+        <div class="col">
+            <div class="btn-group float-right">
+
+                <!--lastActive-->
+                <!-------------->
+                <button type="button" class="btn btn-success" 
+                        name='orderBy' btnRadio="lastActive"
+                        (click)="loadMembers()"
+                        [(ngModel)]="userParams.orderBy">Last Active</button>
+
+                <!--orderBy-->
+                <!----------->
+                <button type="button"class="btn btn-success" 
+                        name='orderBy' btnRadio="created"
+                        (click)="loadMembers()"
+                        [(ngModel)]="userParams.orderBy">Newest Members</button>
+
+            </div>
+        </div>
+
     </form>
 </div>
 

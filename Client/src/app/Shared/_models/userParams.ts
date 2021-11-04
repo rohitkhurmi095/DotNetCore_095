@@ -24,5 +24,11 @@ export class UserParams {
     constructor(user:User){
         this.gender = user.gender === 'male' ? 'female' : 'male';
     }
+
+    //OrderBy
+    //********
+    //{created,lastActive(default)}
+    orderBy="lastActive";
+
     
 }
