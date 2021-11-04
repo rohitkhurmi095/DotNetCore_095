@@ -43,11 +43,16 @@ namespace API.Services
         //6.RETURN Token via TOKEN HANDLER 
         public string CreateToken(User user)
         {
-            //1.Create CLAIMS 
-            //NameId -> to store UserName
+            //1.Create CLAIMS (passed with JWT Request)
+            //Stores current userData
+            //UniqueName -> to store UserName {Access: ClaimTypes.Name} 
+            //NameId -> to store UserId {Access: ClaimTypes.NameIdentifier}
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.NameId,user.UserName)
+                //LoggedIn UserName
+                new Claim(JwtRegisteredClaimNames.UniqueName,user.UserName),
+                //LoggedIn UserId
+                new Claim(JwtRegisteredClaimNames.NameId,user.UserId.ToString())
             };
 
             //2.CREATE CREDENTIALS(Signature(key,algorithm))

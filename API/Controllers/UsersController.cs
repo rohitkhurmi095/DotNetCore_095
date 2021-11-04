@@ -115,7 +115,7 @@ namespace API.Controllers
             //GET username from authenticated user token(claims)
             //------------
             //ClaimTypes = info about identity
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
 
             //Get User by username
             //--------
@@ -168,7 +168,7 @@ namespace API.Controllers
             //GET username from authenticated user token(claims)
             //------------
             //ClaimTypes = info about identity
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
 
             //Get User by username
             //--------
@@ -205,7 +205,7 @@ namespace API.Controllers
             //GET username from authenticated user token(claims)
             //------------
             //ClaimTypes = info about identity
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
 
             //Get User by username
             //--------
@@ -266,7 +266,7 @@ namespace API.Controllers
             //when user login 
             //GET username from authenticated user token(claims)
             //------------
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
 
             //Get User by username
             //--------
@@ -315,7 +315,7 @@ namespace API.Controllers
             //when user login 
             //GET username from authenticated user token(claims)
             //------------
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
 
             //Get User by username
             //--------
