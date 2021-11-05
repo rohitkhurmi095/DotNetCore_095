@@ -35,7 +35,7 @@ export class MemberService {
   
   //**[ STORE Members data STATE ]**
   //Members[]
-  members:Member[];
+  members:Member[] = [];
 
   //CurrentUser
   user:User;
@@ -43,6 +43,10 @@ export class MemberService {
   //UserParams (queryParams)
   userParams:UserParams;
 
+  /***** MEMBER CACHE *****/
+  memberCache = new Map();
+
+  
   //HttpClient - for requests
   constructor(private http:HttpClient,private accountService:AccountService) {
 
@@ -136,6 +140,21 @@ export class MemberService {
   //Type: Member[]
   getMembers(userParams:UserParams){
 
+    //userParams - object
+    //Object.keys - converts object -> value
+    //console.log(Object.values(userParams));
+    //[1, 5, 18, 99, 'lastActive', 'female']
+    //console.log(Object.values(userParams).join('-'));
+    //1-5-18-99-lastActive-female
+
+    //GET Response from memberCache
+    //------------------------------
+    //before calling API if response is there
+    var response = this.memberCache.get(Object.values(userParams).join('-'));
+    if(response){
+      return of(response);
+    }
+
     //Set Query Params
     //*****************
     //Pagination - page(pageNumber),itemsPerPage(pageSize)
@@ -150,8 +169,15 @@ export class MemberService {
   
     //call API + return members(res)
     //******************************
-    //Gives full response back
-    return this.getPaginatedResult<Member[]>(Global.BASE_API_PATH +"users",params);
+    //Gives full response back 
+    return this.getPaginatedResult<Member[]>(Global.BASE_API_PATH +"users",params).pipe(
+      map(response=>{
+
+        //SET Response -> memberCache when API is called
+        this.memberCache.set(Object.values(userParams).join('-'),response);
+        return response;
+      })
+    );
   }
 
 
@@ -164,13 +190,34 @@ export class MemberService {
   //Type: Member
   getMember(username:string):Observable<Member>{
 
-    //Find member in members[]
-    const member = this.members?.find(x=>x.username === username);
+    //GET Response from memberCache
+    //------------------------------
+    //before calling API if response is there
+    //console.log(this.memberCache);
+    //Map(1) {'1-5-18-99-lastActive-female' => PaginatedResult}
+    //Find individual member inside a memberCache
+  
+    //var member = [...this.memberCache.values()];
+    //console.log(member);
+    //[PaginatedResult, PaginatedResult]
+    // |_ result        |__ result
+    //combine result values of arrays
 
-    //If member is found => return member
-    if(member!=undefined){
+    //Get single member{}
+    const member = [...this.memberCache.values()]
+                 .reduce((arr,elem)=>arr.concat(elem.result),[])
+                 .find((member:Member) =>member.username === username);
+
+    if(member){
       return of(member);
     }
+
+    //Find member in members[]
+    //const member = this.members?.find(x=>x.username === username);
+    //If member is found => return member
+    /*if(member!=undefined){
+      return of(member);
+    }*/
 
     //Else call API + Get member by username
     return this.http.get<Member>(Global.BASE_API_PATH + 'users/'+username);
